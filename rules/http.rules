@@ -1,0 +1,39 @@
+#--
+# Example rules for logtrash_http module
+#---------------------------------------
+# Keys: req, code, len, ref, ua, date
+# Types: 1-8. 1=base64 regex, 2=regex, 3=plain comparing, 4=greater len, 5=greater or equal len, 6=smaller len, 7=smaller or equal len, 8=equal
+# Data: string or regex.
+# Additional keys & values: 
+#   - bruteforce_count_key:(0-999)
+[{"key": "req", "type": "1", "data": "GET /."}] # this will match same as regex: ^GET \/\..*
+[{"key": "req", "type": "2", "data": "^\\\\x.*"}]
+[{"key": "req", "type": "1", "data": "GET /_ignition/execute-solution"}]
+[{"key": "req", "type": "1", "data": "POST /Autodiscover/Autodiscover.xml"}]
+[{"key": "req", "type": "1", "data": "GET /wp-content/"}]
+[{"key": "req", "type": "1", "data": "GET /solr/admin/info/system?wt=json"}]
+[{"key": "req", "type": "1", "data": "POST /boaform/admin/formLogin"}]
+[{"key": "req", "type": "1", "data": "GET /hudson"}]
+[{"key": "req", "type": "1", "data": "/tmp/gpon80&ipv=0"}]
+[{"key": "req", "type": "1", "data": "GET /config/getuser?index=0"}]
+[{"key": "req", "type": "1", "data": "GET /?a=fetch"}]
+[{"key": "req", "type": "2", "data": ".*invokefunction\\&function\\=call\\_user\\_func.*"}]
+[{"key": "req", "type": "1", "data": "GET http"}]
+[{"key": "req", "type": "1", "data": ""}]
+[{"key": "req", "type": "1", "data": "POST /cgi-bin"}]
+[{"key": "code", "type": "3", "data": "400"}]
+[{"key": "code", "type": "3", "data": "408"}]
+#--
+# Meaning for bottom rule:
+# if http code==404 AND referer=~\x22-\x22
+# rule have set bruteforce_count_key:1 like this we can set bruteforce options with (-b). 
+# Ex.: -b "key:1,climit:3,tlimit:5" if rule is matched 3times in 5sec line is known as trash
+[{"key": "code", "type": "3", "data": "404", "bruteforce_count_key": "1"}, {"key": "ref", "type": "2", "data": "\\x22-\\x22", "bruteforce_count_key": "1"}]
+#--
+# Meaning for bottom rule:
+# if http code==404 AND referer=~http://SOME_IP_NUMBER.*
+# then is matched as trash. There is set bruteforce_count_key:2 so we should use (-b) option.
+# Ex.: -b "key:1,climit:3,tlimit:5;key:2,climit:5,tlimit:10"
+[{"key": "code", "type": "3", "data": "404", "bruteforce_count_key": "2"}, {"key": "ref", "type": "2", "data": "\\x22http\\:\\/\\/\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}.*", "bruteforce_count_key": "2"}]
+#
+[{"key": "code", "type": "3", "data": "405", "bruteforce_count_key": "2"}, {"key": "ref", "type": "2", "data": "\\x22http\\:\\/\\/\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}.*", "bruteforce_count_key": "2"}]
