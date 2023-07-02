@@ -60,13 +60,15 @@ def XObj( line ):
 	
 	#--
 	#
-	#print("XObj line: {}".format(line))
+	print("XObj line: {}".format(line))
 	a = line.split(" ",5)
-	
+	arr_dump( a )
 	#--
 	#
-	tmpdate         = "{} {} {}".format(a[0], a[1], a[2])
-	xobj["user"]    = a[3]
+	#tmpdate         = "{} {} {}".format(a[0], a[1], a[2])
+	tmpdate         = "{} {} {}".format(a[0], a[2], a[3])
+	#xobj["user"]    = a[3]
+	xobj["user"]    = a[4]
 	tmpmessage      = a[5]
 	
 	#
