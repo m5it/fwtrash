@@ -1000,8 +1000,8 @@ def main(argv):
 	#import logtrash_http as parser
 	try:
 		parser = importlib.import_module( opt_parser )
-	except:
-		print("logtrash: Failed to load parser {}".format( opt_parser ))
+	except Exception as E:
+		print("logtrash: Failed to load parser {}, {}".format( opt_parser, E ))
 		sys.exit()
 	
 	#--

@@ -8,8 +8,8 @@
 #--------------------------------------------------------------------
 # function XObj(...) is used to split line into useful values
 #--------------------------------------------------------------------
-from logtrash import crc32b
-from logtrash import strTs2Sec
+from fwtrash import crc32b
+from fwtrash import strTs2Sec
 import json
 
 #--
