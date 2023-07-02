@@ -516,7 +516,7 @@ def Parse( line ):
 	xobj = parser.XObj( line )
 	#crc  = xobj["crc"]
 	crc = xobj["hash"]
-	#arr_dump(xobj)
+	arr_dump(xobj)
 	#--
 	# check if line is trash/attacker/..:)
 	tmp  = Check_trash( xobj )
@@ -1006,8 +1006,8 @@ def main(argv):
 	
 	#--
 	# thread for displaying of stats
-	gh_stats = threading.Thread(target=Stats,args=( ))
-	gh_stats.start()
+	#gh_stats = threading.Thread(target=Stats,args=( ))
+	#gh_stats.start()
 	
 	#--
 	#
