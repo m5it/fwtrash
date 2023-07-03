@@ -62,8 +62,8 @@ def XObj( line ):
 	#
 	#print("XObj line: {}".format(line))
 	a = line.split(" ",5)
-	print("DEBUG MODULE ssh: \n")
-	arr_dump( a )
+	#print("DEBUG MODULE ssh: \n")
+	#arr_dump( a )
 	#--
 	#
 	#tmpdate         = "{} {} {}".format(a[0], a[1], a[2])

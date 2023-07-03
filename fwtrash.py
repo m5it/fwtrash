@@ -420,8 +420,8 @@ def Check_trash( xobj ):
 	#--
 	# [{"key": "req", "type": "1", "data": "GET /."}]
 	#
-	print("DEBUG Check_trash() xobj: \n")
-	arr_dump( xobj )
+	#print("DEBUG Check_trash() xobj: \n")
+	#arr_dump( xobj )
 	
 	i        = 0  #
 	acompare = [None]*len(g_rules)
@@ -454,7 +454,7 @@ def Check_trash( xobj ):
 				if rmatch(tmp,"\=\=$"): # fix for bug on short rules
 					tmp = tmp[:-3] # remove end of base64 so is possible to match anything after
 			
-			print("DEBUG Check_trash() debug rule and req: {}={} vs {}={}".format( len(tmp1), tmp1, len(tmp), tmp))
+			#print("DEBUG Check_trash() debug rule and req: {}={} vs {}={}".format( len(tmp1), tmp1, len(tmp), tmp))
 			
 			#--
 			# String comparisons
@@ -516,7 +516,7 @@ def Parse( line ):
 	# x_date can be formated
 	# x_req  can be splited and used
 	#
-	print("DEBUG Parsing line: {}".format(line))
+	#print("DEBUG Parsing line: {}".format(line))
 	xobj = parser.XObj( line )
 	#crc  = xobj["crc"]
 	crc = xobj["hash"]
@@ -537,7 +537,7 @@ def Parse( line ):
 	# Check if is allowed ip then skip.
 	#if xobj["ip"] != "" and arr_index(g_badips,xobj["ip"]) == None:
 	if xobj["ip"] != "" and arr_index(g_allowedips,xobj["ip"]) != None:
-		print("Allowed ip {}, skipping...".format( xobj["ip"] ))
+		#print("Allowed ip {}, skipping...".format( xobj["ip"] ))
 		cnts_allowed+=1
 	#--
 	#
