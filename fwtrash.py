@@ -451,7 +451,7 @@ def Check_trash( xobj ):
 				if rmatch(tmp,"\=\=$"): # fix for bug on short rules
 					tmp = tmp[:-3] # remove end of base64 so is possible to match anything after
 			
-			#print("Parse() debug rule and req: {}={} vs {}={}".format( len(tmp1), tmp1, len(tmp), tmp))
+			print("DEBUG Check_trash() debug rule and req: {}={} vs {}={}".format( len(tmp1), tmp1, len(tmp), tmp))
 			
 			#--
 			# String comparisons
