@@ -513,6 +513,7 @@ def Parse( line ):
 	# x_date can be formated
 	# x_req  can be splited and used
 	#
+	print("DEBUG Parsing line: {}".format(line))
 	xobj = parser.XObj( line )
 	#crc  = xobj["crc"]
 	crc = xobj["hash"]
@@ -531,7 +532,8 @@ def Parse( line ):
 	
 	#--
 	# Check if is allowed ip then skip.
-	if xobj["ip"] != "" and arr_index(g_badips,xobj["ip"]) == None:
+	#if xobj["ip"] != "" and arr_index(g_badips,xobj["ip"]) == None:
+	if xobj["ip"] != "" and arr_index(g_allowedips,xobj["ip"]) != None:
 		print("Allowed ip {}, skipping...".format( xobj["ip"] ))
 		cnts_allowed+=1
 	#--
@@ -955,6 +957,8 @@ def main(argv):
 	# DEBUG ONLY
 	print("DEBUG g_badips: \n")
 	arr_dump( g_badips )
+	print("DEBUG g_allowedips: \n")
+	arr_dump( g_allowedips )
 	
 	#--
 	if   opt_help:

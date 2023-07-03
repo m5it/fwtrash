@@ -113,6 +113,8 @@ def XObj( line ):
 	a = pmatch(tmpmessage,"\) \-\> \(([a-zA-Z0-9\!\_\-]+)(?=.)")
 	if len(a)>0:
 		tmptryuser1 = a[0]
+	#-- (3.7.23)
+	# banner exchange: Connection from 198.199.100.116 port 39608: invalid format
 		
 	#--
 	# generate "crc_message" so our hash is more unique
