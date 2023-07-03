@@ -420,6 +420,9 @@ def Check_trash( xobj ):
 	#--
 	# [{"key": "req", "type": "1", "data": "GET /."}]
 	#
+	print("DEBUG Check_trash() xobj: \n")
+	arr_dump( xobj )
+	
 	i        = 0  #
 	acompare = [None]*len(g_rules)
 	#
