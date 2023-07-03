@@ -60,9 +60,9 @@ def XObj( line ):
 	
 	#--
 	#
-	print("XObj line: {}".format(line))
+	#print("XObj line: {}".format(line))
 	a = line.split(" ",5)
-	arr_dump( a )
+	#arr_dump( a )
 	#--
 	#
 	#tmpdate         = "{} {} {}".format(a[0], a[1], a[2])
