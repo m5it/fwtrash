@@ -68,18 +68,18 @@ def XObj( line ):
 	#
 	#tmpdate         = "{} {} {}".format(a[0], a[1], a[2])
 	tmpdate         = "{} {} {}".format(a[0], a[2], a[3])
-	xobj["user"]    = a[3]
+	xobj["user"]    = a[4]
 	b = a[5].split(": ",2)
-	xobj["proc"]    = b[0] # can be splited into proc[pid]
+	xobj["service"] = b[0] # can be splited into proc[pid]
 	tmpmessage      = b[1]
 	
 	#
-	if rmatch(a[4],".*\[.*"):
-		tmp             = a[4].split("[")
-		xobj["service"] = tmp[0]
-		tmppid          = tmp[1][0:len(tmp[1])-2]
-	else:
-		xobj["service"] = a[4]
+	#if rmatch(a[4],".*\[.*"):
+	#	tmp             = a[4].split("[")
+	#	xobj["service"] = tmp[0]
+	#	tmppid          = tmp[1][0:len(tmp[1])-2]
+	#else:
+	#	xobj["service"] = a[4]
 	
 	#--
 	# retrive IP if included
