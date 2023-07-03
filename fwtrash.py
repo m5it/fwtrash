@@ -953,6 +953,7 @@ def main(argv):
 	
 	#--
 	# DEBUG ONLY
+	print("DEBUG g_badips: \n")
 	arr_dump( g_badips )
 	
 	#--
@@ -1010,8 +1011,8 @@ def main(argv):
 	
 	#--
 	# thread for displaying of stats
-	#gh_stats = threading.Thread(target=Stats,args=( ))
-	#gh_stats.start()
+	gh_stats = threading.Thread(target=Stats,args=( ))
+	gh_stats.start()
 	
 	#--
 	#
