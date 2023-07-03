@@ -866,7 +866,7 @@ def Stats():
 #--
 #
 def main(argv):
-	global g_opt_file_allowedips, g_opt_stop_next_day, g_bruteforce, g_bruteforce_keys, g_opt_stat_display_keys, g_opt_stat_display_temp, g_opt_file_rules, g_opt_file_badips, g_opt_file_trash, g_opt_comm_onbadip, gh_stats, gh_commands, version, parser, g_opt_import_parser, g_opt_file_option
+	global g_opt_file_allowedips, g_opt_stop_next_day, g_bruteforce, g_bruteforce_keys, g_opt_stat_display_keys, g_opt_stat_display_temp, g_opt_file_rules, g_opt_file_badips, g_opt_file_trash, g_opt_comm_onbadip, gh_stats, gh_commands, version, parser, g_opt_import_parser, g_opt_file_option,g_badips
 	
 	#--
 	opts           = []
@@ -950,6 +950,10 @@ def main(argv):
 	Load_badips()
 	Load_rules()
 	Load_trash()
+	
+	#--
+	# DEBUG ONLY
+	arr_dump( g_badips )
 	
 	#--
 	if   opt_help:
