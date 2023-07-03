@@ -69,8 +69,9 @@ def XObj( line ):
 	#tmpdate         = "{} {} {}".format(a[0], a[1], a[2])
 	tmpdate         = "{} {} {}".format(a[0], a[2], a[3])
 	#xobj["user"]    = a[3]
-	xobj["user"]    = a[4]
-	tmpmessage      = a[5]
+	b = a[5].split(": ",2)
+	xobj["user"]    = b[0]
+	tmpmessage      = b[1]
 	
 	#
 	if rmatch(a[4],".*\[.*"):
