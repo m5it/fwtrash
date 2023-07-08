@@ -93,7 +93,7 @@ Default keys for modules:
   - bruteforced  ( True | False )
   - hash         ( crc32b )
   - last_ts      ( timestamp in sec )
-Other keys can be found by viewing modules/logtrash_http.py or modules/logtrash_ssh.py and check what keys xobj object contain.
+Other keys can be found by viewing modules/http.py or modules/ssh.py and check what keys xobj object contain.
 
 
 #---------------
@@ -124,7 +124,7 @@ Added bruteforce detection.
 Updated display of statistics by flushing and overwriting to stdout.
 Added option to execute a command when new bad ip is found.
 Updated usage with linux pipes ex.: 
-tail -f /var/log/nginx/access.log | ./logtrash.py -o badips.out -O trash.out -c "iptables -A INPUT -s [--RIP -J DROP]" > stats.out&
+tail -f /var/log/nginx/access.log | ./fwtrash.py -o badips.out -O trash.out -c "iptables -A INPUT -s [--RIP -J DROP]" > stats.out&
 tail -f stats.out # to run program in background and just tailing the statistics.
 
 #--------------------------------------------------------------------
@@ -133,7 +133,7 @@ This version is useful to run in bash loop like that script is monitoring all th
 To run FWTrash in bash loop is created script "fwtrash.sh".
 
 Other usage is trough linux pipes and commands like "cat" or "tail".
-Ex.: cat /var/log/nginx/access.log | ./logtrash.py -o badips.out
+Ex.: cat /var/log/nginx/access.log | ./fwtrash.py -o badips.out
 
 
 
