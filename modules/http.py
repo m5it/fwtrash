@@ -1,10 +1,8 @@
 #!/usr/bin/python3.8
 
 #--------------------------------------------------------------------
-#                   logtrash.py by beaykos.69.mu
-#                       & wanabe hackers :)
-#                            & dr0gs
-#            logtrash_http.py 4 NGINX and maybe APACHE
+#                   fwtrash.py
+#            http.py 4 NGINX and maybe APACHE
 #--------------------------------------------------------------------
 # function XObj(...) is used to split line into useful values
 #--------------------------------------------------------------------

@@ -1,9 +1,7 @@
 #!/usr/bin/python3.8
 
 #--------------------------------------------------------------------
-#                   logtrash.py by beaykos.69.mu
-#                       & wanabe hackers :)
-#                            & dr0gs
+#                   fwtrash.py
 # logtrash_ssh module 4  ssh and maybe other services from auth.log
 #--------------------------------------------------------------------
 # function XObj(...) is used to split line into useful values
