@@ -62,6 +62,19 @@ Other keys can be found by viewing modules/logtrash_http.py or modules/logtrash_
 #--
 # Some examples of usage:
 
+# (8.7.23)
+# Use of files: runwhile_http.sh OR runwhile_ssh.sh (Just simplify steps..)
+# Ex.:
+nohup ./runwhile_http.sh&
+# OR
+nohup ./runwhile_ssh.sh&
+
+# Ex. preview of outputs:
+tail -f run_http.out
+# OR
+tail -f run_ssh.out
+
+#-- Examples with arguments and options from run_http.sh, run_ssh.sh
 # 1.) Example with module "http".
 tail -f /var/log/nginx/access.log | ./fwtrash.py -P rules/http.rules -o badips.out -O trash_http.out -p modules.http -s "date,ip,repeat,req;60,ref;20,ua;20,code,len" -S "[--DATE] - ([--REPEAT],[--CODE],[--LEN]) [--IP] => [--REQ] ua: [--UA], ref: [--REF]" -c "iptables -A INPUT -s [--IP]/32 -j DROP" -b "key:1,climit:3,tlimit:5;key:2,climit:3,tlimit:6"
 
