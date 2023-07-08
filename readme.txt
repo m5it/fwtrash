@@ -11,7 +11,15 @@
 Contain files:
 --------------
   - fwtrash.py ( script that do the work )
-  - fw.sh       ( iptables script that was used in v0.1 maybe in future can be included again )
+  - modules/http.py   (used optionaly)
+  - modules/ssh.py    (used optionaly)
+  - rules/http.rules  (used optionaly)
+  - rules/ssh.rules   (used optionaly)
+  - run_http.sh       (used with runwhile_http.sh)
+  - run_ssh.sh        (used with runwhile_ssh.sh)
+  - runwhile_http.sh  (simple START for nginx)
+  - runwhile_ssh.sh   (simple START for ssh)
+  - fw.sh             ( iptables script that was used in v0.1 maybe in future can be included again )
   - other files created by script or just trash...
 
 Contain modules:
