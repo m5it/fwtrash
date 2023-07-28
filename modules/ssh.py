@@ -55,22 +55,24 @@ def XObj( line ):
 		"blocked":False,
 		"bruteforced":False,
 	}
-	
+
 	#--
 	#
-	#print("XObj line: {}".format(line))
+#	print("XObj line: {}".format(line))
 	a = line.split(" ",5)
 	#print("DEBUG MODULE ssh: \n")
-	#arr_dump( a )
+#	arr_dump( a )
 	#--
 	#
-	#tmpdate         = "{} {} {}".format(a[0], a[1], a[2])
-	tmpdate         = "{} {} {}".format(a[0], a[2], a[3])
-	xobj["user"]    = a[4]
-	b = a[5].split(": ",2)
-	xobj["service"] = b[0] # can be splited into proc[pid]
-	tmpmessage      = b[1]
-	
+	tmpdate         = "{} {} {}".format(a[0], a[1], a[2])
+	#tmpdate         = "{} {} {}".format(a[0], a[2], a[3])
+	#xobj["user"]    = a[4]
+	#b = a[5].split(": ",2)
+	#xobj["service"] = b[0] # can be splited into proc[pid]
+	#tmpmessage      = b[1]
+		xobj["user"]    = a[3]
+		xobj["service"] = a[4]
+		tmpmessage      = a[5]
 	#
 	#if rmatch(a[4],".*\[.*"):
 	#	tmp             = a[4].split("[")
@@ -78,7 +80,6 @@ def XObj( line ):
 	#	tmppid          = tmp[1][0:len(tmp[1])-2]
 	#else:
 	#	xobj["service"] = a[4]
-	
 	#--
 	# retrive IP if included
 	a = pmatch(tmpmessage,"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}")
@@ -89,7 +90,7 @@ def XObj( line ):
 	# check if [preauth]
 	if rmatch(tmpmessage,".*\[preauth\]$"):
 		xobj["preauth"] = True
-	
+
 	#
 	#--
 	# retrive PORT if included
@@ -132,7 +133,8 @@ def XObj( line ):
 	#------------------------------------------------------------------------------------------
 	crc = crc32b( str.encode(json.dumps(xobj)) )                     # retrive crc without date so it can be checked if is repeated
 	
-	#
+	print("debug tmpdate: {}".format(tmpdate))
+		#
 	xobj["date"]     = tmpdate                                        # set date after generating crc
 	xobj["message"]  = tmpmessage
 	xobj["pid"]      = tmppid
@@ -143,4 +145,3 @@ def XObj( line ):
 	xobj["hash"]     = crc                                            #
 	#
 	return xobj
-
