@@ -70,9 +70,9 @@ def XObj( line ):
 	#b = a[5].split(": ",2)
 	#xobj["service"] = b[0] # can be splited into proc[pid]
 	#tmpmessage      = b[1]
-		xobj["user"]    = a[3]
-		xobj["service"] = a[4]
-		tmpmessage      = a[5]
+	xobj["user"]    = a[3]
+	xobj["service"] = a[4]
+	tmpmessage      = a[5]
 	#
 	#if rmatch(a[4],".*\[.*"):
 	#	tmp             = a[4].split("[")
