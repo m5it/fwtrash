@@ -61,25 +61,21 @@ def XObj( line ):
 #	print("XObj line: {}".format(line))
 	a = line.split(" ",5)
 	#print("DEBUG MODULE ssh: \n")
-#	arr_dump( a )
+	#arr_dump( a )
 	#--
 	#
-	tmpdate         = "{} {} {}".format(a[0], a[1], a[2])
-	#tmpdate         = "{} {} {}".format(a[0], a[2], a[3])
-	#xobj["user"]    = a[4]
-	#b = a[5].split(": ",2)
-	#xobj["service"] = b[0] # can be splited into proc[pid]
-	#tmpmessage      = b[1]
-	xobj["user"]    = a[3]
-	xobj["service"] = a[4]
-	tmpmessage      = a[5]
-	#
-	#if rmatch(a[4],".*\[.*"):
-	#	tmp             = a[4].split("[")
-	#	xobj["service"] = tmp[0]
-	#	tmppid          = tmp[1][0:len(tmp[1])-2]
-	#else:
-	#	xobj["service"] = a[4]
+	tmpdate = ""
+	if a[1]=="":
+		tmpdate         = "{} {} {}".format(a[0], a[2], a[3])
+		xobj["user"]    = a[4]
+		b = a[5].split(": ",1)
+		xobj["service"] = b[0] # can be splited into proc[pid]
+		tmpmessage      = b[1]
+	else:
+		tmpdate         = "{} {} {}".format(a[0], a[1], a[2])
+		xobj["user"]    = a[3]
+		xobj["service"] = a[4]
+		tmpmessage      = a[5]
 	#--
 	# retrive IP if included
 	a = pmatch(tmpmessage,"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}")
