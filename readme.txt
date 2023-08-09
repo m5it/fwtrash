@@ -106,13 +106,13 @@ Other keys can be found by viewing modules/http.py or modules/ssh.py and check w
 #--------------------------------------------------------------------
 Aug  9 07:02:08 ip-172-31-3-59 sshd[331537]: AuthorizedKeysCommand /usr/share/ec2-instance-connect/eic_run_authorized_keys someuser SHA256:VL35fr4lfd8qW0MgKevJazhobGIkasdasdieWlyVWsq8 failed, status 22
 Aug  9 07:02:09 ip-172-31-3-59 sshd[331537]: AuthorizedKeysCommand /usr/share/ec2-instance-connect/eic_run_authorized_keys someuser SHA256:hw1EXBX79sITcdjVUdzfolVFjxCKasddrmD86ns8 failed, status 22
-Aug  9 07:02:25 ip-172-31-3-59 sshd[331537]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=88.25.23.134  user=someuser
-Aug  9 07:02:27 ip-172-31-3-59 sshd[331537]: Failed password for someuser from 88.25.23.134 port 54636 ssh2
-Aug  9 07:02:31 ip-172-31-3-59 sshd[331537]: Accepted password for someuser from 88.25.23.134 port 54636 ssh2
+Aug  9 07:02:25 ip-172-31-3-59 sshd[331537]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.123.123  user=someuser
+Aug  9 07:02:27 ip-172-31-3-59 sshd[331537]: Failed password for someuser from 192.168.123.123 port 54636 ssh2
+Aug  9 07:02:31 ip-172-31-3-59 sshd[331537]: Accepted password for someuser from 192.168.123.123 port 54636 ssh2
 Aug  9 07:02:31 ip-172-31-3-59 sshd[331537]: pam_unix(sshd:session): session opened for user someuser by (uid=0)
 Aug  9 07:02:31 ip-172-31-3-59 systemd-logind[34426]: New session 3050 of user someuser.
-Aug  9 07:02:36 ip-172-31-3-59 sshd[331928]: Received disconnect from 88.25.23.134 port 54636:11: disconnected by user
-Aug  9 07:02:36 ip-172-31-3-59 sshd[331928]: Disconnected from user someuser 88.25.23.134 port 54636
+Aug  9 07:02:36 ip-172-31-3-59 sshd[331928]: Received disconnect from 192.168.123.123 port 54636:11: disconnected by user
+Aug  9 07:02:36 ip-172-31-3-59 sshd[331928]: Disconnected from user someuser 192.168.123.123 port 54636
 Aug  9 07:02:36 ip-172-31-3-59 sshd[331537]: pam_unix(sshd:session): session closed for user someuser
 Aug  9 07:02:36 ip-172-31-3-59 systemd-logind[34426]: Session 3050 logged out. Waiting for processes to exit.
 Aug  9 07:02:36 ip-172-31-3-59 systemd-logind[34426]: Removed session 3050.
