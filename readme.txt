@@ -104,8 +104,8 @@ Other keys can be found by viewing modules/http.py or modules/ssh.py and check w
 # (9.8.23) Thinking on new functionality that can block users that have been accepted/approved into ssh but ip is not between alowed!
 # Example log when user is accepted (Accepted password for...):
 #--------------------------------------------------------------------
-Aug  9 07:02:08 ip-172-31-3-59 sshd[331537]: AuthorizedKeysCommand /usr/share/ec2-instance-connect/eic_run_authorized_keys someuser SHA256:VL35fr4lfd8qW0MgKevJazhobGIkasdasdieWlyVWsq8 failed, status 22
-Aug  9 07:02:09 ip-172-31-3-59 sshd[331537]: AuthorizedKeysCommand /usr/share/ec2-instance-connect/eic_run_authorized_keys someuser SHA256:hw1EXBX79sITcdjVUdzfolVFjxCKasddrmD86ns8 failed, status 22
+Aug  9 07:02:08 ip-172-31-3-59 sshd[331537]: AuthorizedKeysCommand /usr/share/ec2-instance-connect/eic_run_authorized_keys someuser SHA256:VL35fr4lfd8qW0MgKevJgrrreWlyVWsq8 failed, status 22
+Aug  9 07:02:09 ip-172-31-3-59 sshd[331537]: AuthorizedKeysCommand /usr/share/ec2-instance-connect/eic_run_authorized_keys someuser SHA256:hw1EXBX79sIgrrrfolVFjxCKasddrmD86ns8 failed, status 22
 Aug  9 07:02:25 ip-172-31-3-59 sshd[331537]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=192.168.123.123  user=someuser
 Aug  9 07:02:27 ip-172-31-3-59 sshd[331537]: Failed password for someuser from 192.168.123.123 port 54636 ssh2
 Aug  9 07:02:31 ip-172-31-3-59 sshd[331537]: Accepted password for someuser from 192.168.123.123 port 54636 ssh2
