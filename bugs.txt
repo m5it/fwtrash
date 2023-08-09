@@ -8,9 +8,9 @@ Traceback (most recent call last):
     Parse( line )
   File "./logtrash.py", line 496, in Parse
     xobj = parser.XObj( line )
-  File "/home/t3ch/scripts/fwtrash/modules/logtrash_ssh.py", line 138, in XObj
+  File "/home/someuser/scripts/fwtrash/modules/logtrash_ssh.py", line 138, in XObj
     xobj["last_ts"]  = strTs2Sec( tmpdate, "%b %d %H:%M:%S" )         #
-  File "/home/t3ch/scripts/fwtrash/logtrash.py", line 109, in strTs2Sec
+  File "/home/someuser/scripts/fwtrash/logtrash.py", line 109, in strTs2Sec
     d = datetime.strptime(strTs, args)
   File "/usr/lib/python3.8/_strptime.py", line 568, in _strptime_datetime
     tt, fraction, gmtoff_fraction = _strptime(data_string, format)
@@ -22,9 +22,9 @@ Exception ignored in: <module 'threading' from '/usr/lib/python3.8/threading.py'
 Traceback (most recent call last):
   File "/usr/lib/python3.8/threading.py", line 1388, in _shutdown
     lock.acquire()
-  File "/home/t3ch/scripts/fwtrash/logtrash.py", line 82, in signal_handler
+  File "/home/someuser/scripts/fwtrash/logtrash.py", line 82, in signal_handler
     file_write( g_opt_file_option, json.dumps(g_option), True )
-  File "/home/t3ch/scripts/fwtrash/logtrash.py", line 159, in file_write
+  File "/home/someuser/scripts/fwtrash/logtrash.py", line 159, in file_write
     f = open(filename,"w")
 FileNotFoundError: [Errno 2] No such file or directory: ''
 
