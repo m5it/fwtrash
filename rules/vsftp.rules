@@ -1,0 +1,7 @@
+#--
+# RULES FOR vsftpd service and for it module as modules.vsftp -> modules/vsftp.py
+#--
+[{"key":"code", "type":"2", "data":"FAIL.*", "bruteforce_count_key":"0"}, {"key":"req", "type":"3", "data":"LOGIN", "bruteforce_count_key":"0"}]
+[{"key":"code", "type":"3", "data":"OK", "bruteforce_count_key":"1"}, {"key":"req", "type":"3", "data":"UPLOAD", "bruteforce_count_key":"1"}]
+[{"key":"req", "type":"3", "data":"RENAME", "bruteforce_count_key":"2"}]
+[{"key":"req", "type":"3", "data":"DELETE", "bruteforce_count_key":"3"}]

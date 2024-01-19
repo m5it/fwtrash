@@ -1,1 +1,6 @@
 runhere
+allowedips.txt
+badips.out
+trash_vsftp.out
+trash_ssh.out
+trash_http.out
