@@ -4,7 +4,8 @@
 #-----------------------------------------------------
 
 #tail -f /var/log/syslog.test | ./fwtrash.py -D
-cat /var/log/syslog.test | ./fwtrash.py -D \
+#cat /var/log/syslog.test | ./fwtrash.py -D 
+tail -f /var/log/syslog | ./fwtrash.py -D \
 -o badips.out \
 -O trash_vsftp.out \
 -P rules/vsftp.rules \
