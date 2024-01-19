@@ -4,3 +4,6 @@ badips.out
 trash_vsftp.out
 trash_ssh.out
 trash_http.out
+modules.ssh.opts
+modules.http.opts
+modules.vsftp.opts
