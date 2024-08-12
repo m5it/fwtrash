@@ -3,7 +3,15 @@
 # Script to help you run fwtrash.py with SSH module
 #---------------------------------------------------
 
-tail -f /var/log/auth.log | ./fwtrash.py -D -o badips.out \
+#
+LOG="/var/log/auth.log"
+#
+if [[ $(cat $LOG | wc -l) == "0" ]]; then
+	echo "Log file $LOG is empty, exiting.";
+	exit
+fi
+#
+tail -f $LOG | ./fwtrash.py -D -o badips.out \
 -O trash_ssh.out \
 -P rules/ssh.rules \
 -p modules.ssh \

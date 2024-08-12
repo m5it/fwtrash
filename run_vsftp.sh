@@ -3,6 +3,15 @@
 # Script to help you run fwtrash.py for VSFTPD service
 #-----------------------------------------------------
 
+#
+LOG="/var/log/syslog"
+#
+if [[ $(cat $LOG | wc -l) == "0" ]]; then
+	echo "Log file $LOG is empty, exiting.";
+	exit
+fi
+
+#
 #tail -f /var/log/syslog.test | ./fwtrash.py -D
 #cat /var/log/syslog.test | ./fwtrash.py -D 
 tail -f /var/log/syslog | ./fwtrash.py -D \
