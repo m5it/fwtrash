@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-
 #--------------------------------------------------------------------
 #                   fwtrash.py :)
 #--------------------------------------------------------------------
@@ -740,6 +739,15 @@ def Stats():
 		sys.stdout.flush()
 		
 		#--
+		# functionality for option g_opt_stop_next_day
+		# Stop the program if new day began. Useful to run in bash loop to rerun logtrash.py
+		clearline("Debug g_curday: {} vs. now: {}".format(g_curday,datetime.today().strftime('%d')))
+		if g_curday!=datetime.today().strftime('%d'):
+			print("LogTrash => Exiting cause of -D option and next day...")
+			die=True
+			sys.exit()
+			
+		#--
 		# display statistics in loop
 		clearline("LogTrash => Uptime {}/s".format(cnt),'\n')
 		clearline("All            : {}".format(cnts_all),'\n')
@@ -812,7 +820,7 @@ def Stats():
 		sys.stdout.write('\x1b[1A') #-- go up line | Badips
 		sys.stdout.write('\x1b[1A') #-- go up line | All trash
 		
-		#sys.stdout.write('\x1b[1A') #-- go up line | All trash
+		sys.stdout.write('\x1b[1A') #-- go up line | DEBUG one line
 		
 		#--
 		# jump back for number of displayed last trashes
@@ -849,15 +857,7 @@ def Stats():
 		# (idea: maybe this we should connect programs trough server like ircbot..)
 		if ( int(time.time()) - last_load_check ) >= 360:
 			Load_badips()
-			
 			last_load_check = int(time.time())
-		
-		#--
-		# functionality for option g_opt_stop_next_day
-		# Stop the program if new day began. Useful to run in bash loop to rerun logtrash.py
-		if g_curday!=datetime.today().strftime('%d'):
-			die=True
-			sys.exit()
 		
 		#
 		if cnt==5:

@@ -1,3 +1,4 @@
+*.out
 runhere
 allowedips.txt
 badips.out
