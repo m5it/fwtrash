@@ -13,7 +13,9 @@ import json
 #--
 #
 def XObj( line ):
-	adebug = line.split(" ")
+	line_check = line.split(" ")
+	if len(line_check)<=3:
+		continue
 	print("http.py => XObj line( {} ): {}".format( len(adebug),line ))
 	#--
 	# returned object
