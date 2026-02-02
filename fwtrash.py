@@ -455,12 +455,14 @@ def Parse( line ):
 	
 	#--
 	# Check if thread was already checked if so skip/continue...
-	if g_option["last_ts"]>0 and g_option["last_ts"]>=xobj["last_ts"]:
+	if "isTrash" in tmp and tmp["isTrash"] and xobj["blocked"]==False:
+		print("Parse( {} ) Repeating check on trash: {}".format( crc,xobj["ip"] ))
+	elif g_option["last_ts"]>0 and g_option["last_ts"]>=xobj["last_ts"]:
 		cnts_checked_already+=1
-		print("Parse( {} ) Thread already checked! xobjTS: {} optTS: {} = {}/s".format( crc, xobj['last_ts'], g_option['last_ts'], (g_option["last_ts"]-xobj["last_ts"]) ))
+		print("Parse( {} ) Thread already checked! IP: {}, xobjTS: {} optTS: {} = {}/s".format( crc, xobj["ip"], xobj['last_ts'], g_option['last_ts'], (g_option["last_ts"]-xobj["last_ts"]) ))
 		return False
 	else:
-		print("Parse( {} ) Checking first time!".format( crc ))
+		print("Parse( {} ) Checking first time: {}".format( crc, xobj["ip"] ))
 	
 	#--
 	# Check if is allowed ip then skip.
