@@ -966,6 +966,9 @@ def main(argv):
 	#
 	for line in sys.stdin:
 		Parse( line )
+	#
+	print("Exit!")
+	Stats()
 
 #--
 if __name__ == '__main__':
