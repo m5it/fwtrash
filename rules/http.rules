@@ -23,6 +23,7 @@
 [{"key": "req", "type": "1", "data": "POST /cgi-bin"}]
 [{"key": "code", "type": "3", "data": "400"}]
 [{"key": "code", "type": "3", "data": "408"}]
+[{"key": "ua", "type": "2", "data": "MJ12bot"}]
 #--
 # Meaning for bottom rule:
 # if http code==404 AND referer=~\x22-\x22
