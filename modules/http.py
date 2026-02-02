@@ -159,8 +159,8 @@ def XObj( line ):
 		tmpdata = "{} \"-\" 667 0 \"{}\" \"-\"\n".format(tmpdate,tmpobj['server'])
 		a[3] = tmpdata
 		a[0] = tmpobj["client"]
-		xobj['host']     = tmpobj['host']
-		xobj['upstream'] = tmpobj['upstream']
+		#xobj['host']     = tmpobj['host']
+		#xobj['upstream'] = tmpobj['upstream']
 		xobj['server']   = tmpobj['server']
 	#	return None
 	#else:
