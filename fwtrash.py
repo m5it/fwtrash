@@ -448,6 +448,7 @@ def Parse( line ):
 	#--
 	# check if line is trash/attacker/..:)
 	tmp  = Check_trash( xobj )
+	print("Check_trash({}): {}".format( crc, tmp ))
 	#
 	xobj = tmp["xobj"]
 	
