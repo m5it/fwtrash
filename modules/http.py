@@ -59,15 +59,20 @@ def XObj( line ):
 	#XObj D1(4) ['78.128.112.74', '-', '-', '[02/Feb/2026:06:34:09 +0000] "SSH-2.0-Go" 400 157 "-" "-"\n']
 	#XObj D2(2) ['[02/Feb/2026:06:34:09 +0000', '"SSH-2.0-Go" 400 157 "-" "-"\n']
 
-	#-- Failed
+	#-- ERROR
 	#XObj D1( 4 ) ['2026/01/31', '03:32:38', '[error]', '28076#28076: *64310 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 8.222.225.103, server: aiia.grandekos.com, request: "GET /public/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1", upstream: "fastcgi://unix:/run/php8.2-fpm.sock:", host: "2.139.221.31:443"\n']
 	
 	#XObj D2( 1 ) ['28076#28076: *64310 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 8.222.225.103, server: aiia.grandekos.com, request: "GET /public/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1", upstream: "fastcgi://unix:/run/php8.2-fpm.sock:", host: "2.139.221.31:443"\n']
 	
+	#-- CRIT ERROR!
+	# XObj D1( 4 ): ['2026/01/24', '01:57:34', '[crit]', '28076#28076: *34519 SSL_read() failed (SSL: error:0A000119:SSL routines::decryption failed or bad record mac error:0A000139:SSL routines::record layer failure) while waiting for request, client: 152.53.52.160, server: 0.0.0.0:443\n']
+	# XObj D2( 1 ): ['28076#28076: *34519 SSL_read() failed (SSL: error:0A000119:SSL routines::decryption failed or bad record mac error:0A000139:SSL routines::record layer failure) while waiting for request, client: 152.53.52.160, server: 0.0.0.0:443\n']
 	#--
 	# (2.2.26) - addeding support to parse php error
 	if a[2]=="[error]":
 		print("ERROR!")
+	elif a[2]=="[crit]":
+		print("CRITIC ERROR!")
 	else:
 		print("NOT ERROR!")
 		xobj["ip"]   = a[0]
