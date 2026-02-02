@@ -935,11 +935,11 @@ def main(argv):
 	#print("DEBUG g_bruteforce_keys( {} ): {}".format( len(g_bruteforce_keys), g_bruteforce_keys))
 	#exit(1)
 	#--
-	if select.select([sys.stdin,],[],[],0.0)[0]:
-		nothing()
-	else:
-		Help()
-		sys.exit(1)
+	#if select.select([sys.stdin,],[],[],0.0)[0]:
+	#	nothing()
+	#else:
+	#	Help()
+	#	sys.exit(1)
 	
 	#--
 	#
