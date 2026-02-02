@@ -67,7 +67,7 @@ def XObj( line ):
 	# (2.2.26) - addeding support to parse php error
 	if a[2]=="[error]":
 		print("ERROR!")
-	else
+	else:
 		print("NOT ERROR!")
 		xobj["ip"]   = a[0]
 		tmp          = a[3]
@@ -86,7 +86,6 @@ def XObj( line ):
 		tmp          = a[4]
 		a            = tmp.split("\"",2)
 		xobj["ua"]   = a[1]
-	fi
 	#--
 	#
 	crc = crc32b( str.encode(json.dumps(xobj)) ) # retrive crc without date so it can be checked if is repeated
