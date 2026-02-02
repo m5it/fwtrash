@@ -431,6 +431,8 @@ def Parse( line ):
 	#
 	#print("DEBUG Parsing line: {}".format(line))
 	xobj = parser.XObj( line )
+	print("Parse() xobj: ")
+	print(xobj)
 	if xobj is None:
 		print("Parse() Failed line ",line)
 		return False
