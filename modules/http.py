@@ -89,9 +89,10 @@ def XObj( line ):
 		"ref"    :"",
 		"ua"     :"",
 		# variables from error
-		"host"   :"",
+		"host"    :"",
 		"upstream":"",
-		"server":"",
+		"server"  :"",
+		"data"    :"",
 		# variables added by program
 		"repeat" :1,
 		"hash"   :"", #crc32b of line
@@ -133,6 +134,7 @@ def XObj( line ):
 	# (2.2.26) - addeding support to parse php error
 	if a[2]=="[error]":
 		#print("ERROR!")
+		xobj["data"] = a[3]
 		tmpdate = fix_datetime("{} {}".format( a[0], a[1] ))
 		tmpobj = extract_log_fields( a[3] )
 		#print("ERROR, fixed log: {}".format( tmpobj ))
@@ -147,13 +149,14 @@ def XObj( line ):
 		xobj['upstream'] = tmpobj['upstream']
 		xobj['server']   = tmpobj['server']
 	elif a[2]=="[crit]":
-		print("CRITIC ERROR!")
-		print("http.py => XObj line( {} ): {}".format( len(line_check),line ))
+		#print("CRITIC ERROR!")
+		#print("http.py => XObj line( {} ): {}".format( len(line_check),line ))
+		xobj["data"] = a[3]
 		tmpdate = fix_datetime("{} {}".format( a[0], a[1] ))
 		tmpobj = extract_log_fields( a[3] )
 		print("http.py => tmpobj",tmpobj)
 		xobj["code"] = 667
-		tmpdata = "{} \"{}\" 667 0 \"{}\" \"-\"\n".format(tmpdate,tmpobj['request'],tmpobj['server'])
+		tmpdata = "{} \"-\" 667 0 \"{}\" \"-\"\n".format(tmpdate,tmpobj['server'])
 		a[3] = tmpdata
 		a[0] = tmpobj["client"]
 		xobj['host']     = tmpobj['host']
