@@ -920,7 +920,7 @@ def main(argv):
 			#
 			g_bruteforce[key] = o
 			g_bruteforce_keys.append( key )
-	
+	print("DEBUG g_bruteforce_keys ",g_bruteforce_keys)
 	#--
 	if select.select([sys.stdin,],[],[],0.0)[0]:
 		nothing()
