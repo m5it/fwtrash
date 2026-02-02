@@ -41,14 +41,16 @@ def fix_datetime(input_str):
 
 	# Format the final output
 	formatted_date = f"{day}/{month_abbr}/{year}"
-	#result = f"[{formatted_date}:{time_str} +0000]"
-	result = f"[{formatted_date}:{time_str} +0000"
+	result = f"[{formatted_date}:{time_str} +0000]"
 
 	return result
 
-#--
-#
-#
+#-- tmpobj = extract_log_fields(log_line)
+# input: 
+# 28076#28076: *64310 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 8.222.225.103, server: aiia.grandekos.com, request: "GET /public/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1", upstream: "fastcgi://unix:/run/php8.2-fpm.sock:", host: "2.139.221.31:443"\n
+
+# output: 
+# {'client': '8.222.225.103,', 'server': 'aiia.grandekos.com,', 'request': 'GET /public/vendor.... HTTP/1.1', 'upstream': 'fastcgi://unix:/run/...:', 'host': '2.139.221.33'}
 def extract_log_fields(log_line):
 	# Match the key-value pairs using regex
 	pattern = r"""
@@ -131,34 +133,41 @@ def XObj( line ):
 		print("ERROR, fixed date: {}".format(tmpdate))
 		tmpobj = extract_log_fields( a[3] )
 		print("ERROR, fixed log: {}".format( tmpobj ))
+		# [02/Feb/2026:18:18:22 +0000]
+		# [02/Feb/2026:18:18:22 +0000] "SSH-2.0-Go" 400 157 "-" "-"\n
+		tmpdata = "{} \"-\" 666 0 \"-\" \"-\"\n".format(tmpdate)
+		a[3] = tmpdata
+		a[0] = tmpobj["client"]
 	elif a[2]=="[crit]":
 		print("CRITIC ERROR!")
-	else:
-		print("NOT ERROR!")
-		xobj["ip"]   = a[0]
-		tmp          = a[3]
-		print("XObj D1( {} ): {}".format(len(a),a))
-		a            = tmp.split("] ",1)
-		print("XObj D2( {} ): {}".format(len(a),a))
-		tmpdate      = a[0][1:len(a[0])]
-		tmp          = a[1]
-		a            = tmp.split("\"",2)
-		xobj["req"]  = a[1]
-		tmp          = a[2]
-		a            = tmp.split(" ",4)
-		xobj["code"] = a[1]
-		xobj["len"]  = a[2]
-		xobj["ref"]  = a[3]
-		tmp          = a[4]
-		a            = tmp.split("\"",2)
-		xobj["ua"]   = a[1]
+		return None
+	#else:
+	print("NOT ERROR!")
+	xobj["ip"]   = a[0]
+	tmp          = a[3]
+	print("XObj D1( {} ): {}".format(len(a),a))
+	a            = tmp.split("] ",1)
+	print("XObj D2( {} ): {}".format(len(a),a))
+	tmpdate      = a[0][1:len(a[0])]
+	tmp          = a[1]
+	a            = tmp.split("\"",2)
+	xobj["req"]  = a[1]
+	tmp          = a[2]
+	a            = tmp.split(" ",4)
+	xobj["code"] = a[1]
+	xobj["len"]  = a[2]
+	xobj["ref"]  = a[3]
+	tmp          = a[4]
+	a            = tmp.split("\"",2)
+	xobj["ua"]   = a[1]
 	#--
 	#
 	crc = crc32b( str.encode(json.dumps(xobj)) ) # retrive crc without date so it can be checked if is repeated
+	print("DEBUG tmpdate: ",tmpdate)
 	#
 	xobj["date"]    = tmpdate                    # set date after generating crc
 	if tmpdate != None:
-		xobj["last_ts"] = strTs2Sec(tmpdate)         #
+		xobj["last_ts"] = strTs2Sec(tmpdate)     #
 	xobj["hash"]    = crc                        #
 	#
 	return xobj
