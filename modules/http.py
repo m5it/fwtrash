@@ -142,7 +142,7 @@ def XObj( line ):
 		# [02/Feb/2026:18:18:22 +0000] "SSH-2.0-Go" 400 157 "-" "-"\n
 		tmpdata = "{} \"{}\" 666 0 \"{}\" \"-\"\n".format(tmpdate,tmpobj['request'],tmpobj['server'])
 		a[3] = tmpdata
-		a[0] = tmpobj["client"]
+		a[0] = tmpobj["client"][:-1]
 		xobj['host']     = tmpobj['host']
 		xobj['upstream'] = tmpobj['upstream']
 		xobj['server']   = tmpobj['server']
@@ -152,7 +152,7 @@ def XObj( line ):
 		tmpobj = extract_log_fields( a[3] )
 		tmpdata = "{} \"-\" 667 0 \"{}\" \"-\"\n".format(tmpdate,tmpobj['server'])
 		a[3] = tmpdata
-		a[0] = tmpobj["client"]
+		a[0] = tmpobj["client"][:-1]
 		xobj['server']   = tmpobj['server']
 	#--
 	xobj["ip"]   = a[0]
