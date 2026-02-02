@@ -84,6 +84,7 @@ def signal_handler(sig, frame):
 	#
 	die=True
 	#sys.exit()
+	Stats()
 
 #--
 #
