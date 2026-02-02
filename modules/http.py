@@ -126,7 +126,7 @@ def XObj( line ):
 	# (2.2.26) - addeding support to parse php error
 	if a[2]=="[error]":
 		print("ERROR!")
-		tmpdate = fix_datetime("".format( a[0], a[1] ))
+		tmpdate = fix_datetime("{} {}".format( a[0], a[1] ))
 		print("ERROR, fixed date: {}".format(tmpdate))
 		tmpobj = extract_log_fields( a[3] )
 		print("ERROR, fixed log: {}".format( tmpobj ))
