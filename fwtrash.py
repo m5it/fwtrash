@@ -420,7 +420,7 @@ def Check_trash( xobj ):
 # Real parsing of line happen in defined module (-p). Ex.: logtrash_http aka logtrash_http.py and function XObj(...)...
 #
 def Parse( line ):
-	global g_allowedips, g_bruteforce, parser, g_trash, g_badips, cnts_allowed, cnts_checked_already, cnts_autosave_option, cnts_all, cnts_pure, cnts_trash, g_opt_file_badips, g_opt_file_trash, g_opt_comm_onbadip, cnt_autosave_option, g_opt_autosave_option, g_opt_file_option, g_option, g_opt_pure_max, g_pure
+	global g_allowedips, g_bruteforce, g_bruteforce_keys, parser, g_trash, g_badips, cnts_allowed, cnts_checked_already, cnts_autosave_option, cnts_all, cnts_pure, cnts_trash, g_opt_file_badips, g_opt_file_trash, g_opt_comm_onbadip, cnt_autosave_option, g_opt_autosave_option, g_opt_file_option, g_option, g_opt_pure_max, g_pure
 	
 	#--
 	# function XObj(...)
@@ -920,8 +920,8 @@ def main(argv):
 			#
 			g_bruteforce[key] = o
 			g_bruteforce_keys.append( key )
-	print("DEBUG g_bruteforce_keys( {} ): {}".format( len(g_bruteforce_keys), g_bruteforce_keys))
-	exit(1)
+	#print("DEBUG g_bruteforce_keys( {} ): {}".format( len(g_bruteforce_keys), g_bruteforce_keys))
+	#exit(1)
 	#--
 	if select.select([sys.stdin,],[],[],0.0)[0]:
 		nothing()
