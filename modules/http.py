@@ -6,8 +6,8 @@
 #--------------------------------------------------------------------
 # function XObj(...) is used to split line into useful values
 #--------------------------------------------------------------------
-from fwtrash import crc32b
-from fwtrash import strTs2Sec
+from functions import crc32b
+from functions import strTs2Sec
 import json, re
 
 #--
@@ -133,11 +133,9 @@ def XObj( line ):
 	#--
 	# (2.2.26) - addeding support to parse php error
 	if a[2]=="[error]":
-		#print("ERROR!")
 		xobj["data"] = a[3]
 		tmpdate = fix_datetime("{} {}".format( a[0], a[1] ))
 		tmpobj = extract_log_fields( a[3] )
-		#print("ERROR, fixed log: {}".format( tmpobj ))
 		# output: 
 		# {'client': '8.222.225.103,', 'server': 'aiia.grandekos.com,', 'request': 'GET /public/vendor.... HTTP/1.1', 'upstream': 'fastcgi://unix:/run/...:', 'host': '2.139.221.33'}
 		# [02/Feb/2026:18:18:22 +0000]
@@ -149,29 +147,17 @@ def XObj( line ):
 		xobj['upstream'] = tmpobj['upstream']
 		xobj['server']   = tmpobj['server']
 	elif a[2]=="[crit]":
-		#print("CRITIC ERROR!")
-		#print("http.py => XObj line( {} ): {}".format( len(line_check),line ))
 		xobj["data"] = a[3]
 		tmpdate = fix_datetime("{} {}".format( a[0], a[1] ))
 		tmpobj = extract_log_fields( a[3] )
-		print("http.py => tmpobj",tmpobj)
-		xobj["code"] = 667
 		tmpdata = "{} \"-\" 667 0 \"{}\" \"-\"\n".format(tmpdate,tmpobj['server'])
 		a[3] = tmpdata
 		a[0] = tmpobj["client"]
-		#xobj['host']     = tmpobj['host']
-		#xobj['upstream'] = tmpobj['upstream']
 		xobj['server']   = tmpobj['server']
-	#	return None
-	#else:
-	#print("NOT ERROR!")
+	#--
 	xobj["ip"]   = a[0]
 	tmp          = a[3]
-	if xobj['code']==667:
-		print("XObj D1( {} ): {}".format(len(a),a))
 	a            = tmp.split("] ",1)
-	if xobj['code']==667:
-		print("XObj D2( {} ): {}".format(len(a),a))
 	tmpdate      = a[0][1:len(a[0])]
 	tmp          = a[1]
 	a            = tmp.split("\"",2)
