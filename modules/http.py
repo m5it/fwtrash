@@ -135,7 +135,7 @@ def XObj( line ):
 		print("ERROR, fixed log: {}".format( tmpobj ))
 		# [02/Feb/2026:18:18:22 +0000]
 		# [02/Feb/2026:18:18:22 +0000] "SSH-2.0-Go" 400 157 "-" "-"\n
-		tmpdata = "{} \"-\" 666 0 \"-\" \"-\"\n".format(tmpdate)
+		tmpdata = "{} \"a\" 666 0 \"b\" \"c\"\n".format(tmpdate)
 		a[3] = tmpdata
 		a[0] = tmpobj["client"]
 	elif a[2]=="[crit]":
