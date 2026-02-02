@@ -24,6 +24,10 @@
 [{"key": "code", "type": "3", "data": "400"}]
 [{"key": "code", "type": "3", "data": "408"}]
 [{"key": "ua", "type": "2", "data": "MJ12bot"}]
+#-- ERROR
+[{"key": "code", "type": "3", "data": "666", "bruteforce_count_key": "3"}]
+#-- CRITIC
+[{"key": "code", "type": "3", "data": "667", "bruteforce_count_key": "4"}]
 #--
 # Meaning for bottom rule:
 # if http code==404 AND referer=~\x22-\x22
