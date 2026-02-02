@@ -92,7 +92,8 @@ def XObj( line ):
 	crc = crc32b( str.encode(json.dumps(xobj)) ) # retrive crc without date so it can be checked if is repeated
 	#
 	xobj["date"]    = tmpdate                    # set date after generating crc
-	xobj["last_ts"] = strTs2Sec(tmpdate)         #
+	if tmpdate != None:
+		xobj["last_ts"] = strTs2Sec(tmpdate)         #
 	xobj["hash"]    = crc                        #
 	#
 	return xobj
