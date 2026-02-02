@@ -11,6 +11,61 @@ from fwtrash import strTs2Sec
 import json
 
 #--
+# Ex.:
+# tmp = fix_datetime('2026/01/31 03:32:38')
+def fix_datetime(input_str):
+	# Split the input string into date and time parts
+	date_str, time_str = input_str.split()
+
+	# Split the date into year, month, and day
+	year, month, day = date_str.split('/')
+
+	# Define a dictionary to map numeric month to its abbreviation
+	month_abbr = {
+		'01': 'Jan',
+		'02': 'Feb',
+		'03': 'Mar',
+		'04': 'Apr',
+		'05': 'May',
+		'06': 'Jun',
+		'07': 'Jul',
+		'08': 'Aug',
+		'09': 'Sep',
+		'10': 'Oct',
+		'11': 'Nov',
+		'12': 'Dec'
+	}
+
+	# Get the month abbreviation
+	month_abbr = month_abbr[month]
+
+	# Format the final output
+	formatted_date = f"{day}/{month_abbr}/{year}"
+	result = f"[{formatted_date}:{time_str} +0000]"
+
+	return result
+
+#--
+#
+#
+def extract_log_fields(log_line):
+	# Match the key-value pairs using regex
+	pattern = r"""
+		(client|server):\s*(\S+)                # Unquoted values for client/server
+		| 
+		(request|upstream|host):\s*"(.*?)"       # Quoted values for request/upstream/host
+	"""
+	matches = re.findall(pattern, log_line, re.VERBOSE)
+	
+	result = {}
+	for match in matches:
+		if match[0]:  # client or server
+			result[match[0]] = match[1]
+		else:         # request, upstream, or host
+			result[match[2]] = match[3]
+	
+	return result
+
 #
 def XObj( line ):
 	line_check = line.split(" ")
@@ -71,6 +126,10 @@ def XObj( line ):
 	# (2.2.26) - addeding support to parse php error
 	if a[2]=="[error]":
 		print("ERROR!")
+		tmpdate = fix_datetime("".format( a[0], a[1] ))
+		print("ERROR, fixed date: {}".format(tmpdate))
+		tmpobj = extract_log_fields( a[3] )
+		print("ERROR, fixed log: {}".format( tmpobj ))
 	elif a[2]=="[crit]":
 		print("CRITIC ERROR!")
 	else:
