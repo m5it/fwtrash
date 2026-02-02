@@ -27,7 +27,8 @@
 #--
 # Meaning for bottom rule:
 # if http code==404 AND referer=~\x22-\x22
-# rule have set bruteforce_count_key:1 like this we can set bruteforce options with (-b). 
+# rule have set bruteforce_count_key:1 like this we can set bruteforce 
+# options with (-b). 
 # Ex.: -b "key:1,climit:3,tlimit:5" if rule is matched 3times in 5sec line is known as trash
 [{"key": "code", "type": "3", "data": "404", "bruteforce_count_key": "1"}, {"key": "ref", "type": "2", "data": "\\x22-\\x22", "bruteforce_count_key": "1"}]
 #--
