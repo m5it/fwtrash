@@ -16,7 +16,7 @@ def XObj( line ):
 	line_check = line.split(" ")
 	if len(line_check)<=3:
 		return None
-	print("http.py => XObj line( {} ): {}".format( len(adebug),line ))
+	print("http.py => XObj line( {} ): {}".format( len(line_check),line ))
 	#--
 	# returned object
 	xobj = {
