@@ -853,33 +853,33 @@ def main(argv):
 	#--
 	if g_opt_file_option=="":
 		g_opt_file_option = "{}.opts".format(opt_parser)
-	print("DEBUG g_opt_file_option: ",g_opt_file_option)
-	#exit(1)
-	#
-	print("")
-	print("---------------------------------------------------------------")
-	print("             --=[ LogTrash by beaykos.69.mu ]=--               ")
-	print("---------------------------------------------------------------")
-	print("          LogTrash will help keeping you trash away            ")
-	print("---------------------------------------------------------------")
-	print("                          version {}                           ".format(version))
-	print("")
+	# print("DEBUG g_opt_file_option: ",g_opt_file_option)
+	# #exit(1)
+	# #
+	# print("")
+	# print("---------------------------------------------------------------")
+	# print("             --=[ LogTrash by beaykos.69.mu ]=--               ")
+	# print("---------------------------------------------------------------")
+	# print("          LogTrash will help keeping you trash away            ")
+	# print("---------------------------------------------------------------")
+	# print("                          version {}                           ".format(version))
+	# print("")
 	
-	#
-	#print("opt_append             :     (-A): {}".format(opt_append))
-	print("opt_parser             :     (-p): {}".format(opt_parser))
-	print("opt_bruteforce         :     (-b): {}".format(opt_bruteforce))
-	print("g_opt_file_option      :     (-m): {}".format(g_opt_file_option))
-	print("g_opt_file_rules       :     (-P): {}".format(g_opt_file_rules))
-	print("g_opt_file_allowedips  :     (-a): {}".format(g_opt_file_allowedips))
-	print("g_opt_file_badips      :     (-o): {}".format(g_opt_file_badips))
-	print("g_opt_file_trash       :     (-O): {}".format(g_opt_file_trash))
-	print("g_opt_comm_onbadip     :     (-c): {}".format(g_opt_comm_onbadip))
-	print("g_opt_stat_disable     :     (-d): {}".format(g_opt_stat_disable))
-	print("g_opt_stat_display_keys:     (-s): {}".format(g_opt_stat_display_keys))
-	print("g_opt_stat_display_temp:     (-S): {}".format(g_opt_stat_display_temp))
-	print("g_opt_stop_next_day    :     (-D): {}".format(g_opt_stop_next_day))
-	print("")
+	# #
+	# #print("opt_append             :     (-A): {}".format(opt_append))
+	# print("opt_parser             :     (-p): {}".format(opt_parser))
+	# print("opt_bruteforce         :     (-b): {}".format(opt_bruteforce))
+	# print("g_opt_file_option      :     (-m): {}".format(g_opt_file_option))
+	# print("g_opt_file_rules       :     (-P): {}".format(g_opt_file_rules))
+	# print("g_opt_file_allowedips  :     (-a): {}".format(g_opt_file_allowedips))
+	# print("g_opt_file_badips      :     (-o): {}".format(g_opt_file_badips))
+	# print("g_opt_file_trash       :     (-O): {}".format(g_opt_file_trash))
+	# print("g_opt_comm_onbadip     :     (-c): {}".format(g_opt_comm_onbadip))
+	# print("g_opt_stat_disable     :     (-d): {}".format(g_opt_stat_disable))
+	# print("g_opt_stat_display_keys:     (-s): {}".format(g_opt_stat_display_keys))
+	# print("g_opt_stat_display_temp:     (-S): {}".format(g_opt_stat_display_temp))
+	# print("g_opt_stop_next_day    :     (-D): {}".format(g_opt_stop_next_day))
+	# print("")
 	
 	#--
 	#
@@ -892,10 +892,10 @@ def main(argv):
 	signal.signal(signal.SIGINT, signal_handler)
 	#--
 	# DEBUG ONLY
-	print("DEBUG g_badips: \n")
-	arr_dump( g_badips )
-	print("DEBUG g_allowedips: \n")
-	arr_dump( g_allowedips )
+	#print("DEBUG g_badips: \n")
+	#arr_dump( g_badips )
+	#print("DEBUG g_allowedips: \n")
+	#arr_dump( g_allowedips )
 	
 	#--
 	if   opt_help:
