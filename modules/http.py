@@ -34,6 +34,7 @@ def XObj( line ):
 		"hash"   :"", #crc32b of line
 		"last_ts":0,
 		"blocked":False,
+		"count":0,
 		"bruteforced":False,
 	}
 	
