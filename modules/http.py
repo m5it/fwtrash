@@ -65,9 +65,10 @@ def XObj( line ):
 	
 	#--
 	# (2.2.26) - addeding support to parse php error
-	if [[ "" == "" ]]; then
-		echo "bip"
+	if a[2]=="[error]":
+		print("ERROR!")
 	else
+		print("NOT ERROR!")
 		xobj["ip"]   = a[0]
 		tmp          = a[3]
 		print("XObj D1( {} ): {}".format(len(a),a))
