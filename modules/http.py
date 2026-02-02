@@ -19,6 +19,7 @@ def XObj( line ):
 		return None
 	print("http.py => XObj line( {} ): {}".format( len(line_check),line ))
 	#--
+	tmpdate = None
 	# returned object
 	xobj = {
 		# variables retrived from log
