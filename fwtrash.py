@@ -533,6 +533,7 @@ def Parse( line ):
 		#--
 		# check if trash already exists in g_trash
 		i = Find_trash( crc )
+		print("Find_trash( {} ): {}".format( crc, i ))
 		#
 		if i is not None: # trash exists
 			#
