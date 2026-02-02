@@ -88,6 +88,8 @@ def XObj( line ):
 		"len"    :"",
 		"ref"    :"",
 		"ua"     :"",
+		#
+		"type"   :"", # ERROR | CRIT | NORMAL
 		# variables from error
 		"host"    :"",
 		"upstream":"",
@@ -135,6 +137,7 @@ def XObj( line ):
 	# (2.2.26) - addeding support to parse php error
 	if a[2]=="[error]":
 		afterCrc["data"] = a[3]
+		afterCrc["type"] = "ERROR"
 		tmpdate = fix_datetime("{} {}".format( a[0], a[1] ))
 		tmpobj = extract_log_fields( a[3] )
 		# output: 
@@ -147,7 +150,9 @@ def XObj( line ):
 		afterCrc["host"]     = tmpobj["host"]
 		afterCrc["upstream"] = tmpobj["upstream"]
 		afterCrc["server"]   = tmpobj["server"]
+		afterCrc["req"]      = tmpobj["request"]
 	elif a[2]=="[crit]":
+		afterCrc["type"] = "CRIT"
 		afterCrc["data"] = a[3]
 		tmpdate = fix_datetime("{} {}".format( a[0], a[1] ))
 		tmpobj = extract_log_fields( a[3] )
@@ -155,6 +160,8 @@ def XObj( line ):
 		a[3] = tmpdata
 		a[0] = tmpobj["client"][:-1]
 		afterCrc["server"] = tmpobj["server"]
+	else:
+		afterCrc["type"] = "NORMAL"
 	#--
 	xobj["ip"]   = a[0]
 	tmp          = a[3]
@@ -162,7 +169,8 @@ def XObj( line ):
 	tmpdate      = a[0][1:len(a[0])]
 	tmp          = a[1]
 	a            = tmp.split("\"",2)
-	xobj["req"]  = a[1]
+	if afterCrc["type"]!="ERROR":
+		xobj["req"]  = a[1]
 	tmp          = a[2]
 	a            = tmp.split(" ",4)
 	xobj["code"] = a[1]
