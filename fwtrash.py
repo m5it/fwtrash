@@ -455,12 +455,12 @@ def Parse( line ):
 	
 	#--
 	# Check if thread was already checked if so skip/continue...
-	# if g_option["last_ts"]>0 and g_option["last_ts"]>=xobj["last_ts"]:
-		# cnts_checked_already+=1
-		# print("Parse( {} ) Thread already checked! xobjTS: {} optTS: {} = {}/s".format( crc, xobj['last_ts'], g_option['last_ts'], (g_option["last_ts"]-xobj["last_ts"]) ))
-		# return False
-	# else:
-		# print("Parse( {} ) Checking first time!".format( crc ))
+	if g_option["last_ts"]>0 and g_option["last_ts"]>=xobj["last_ts"]:
+		cnts_checked_already+=1
+		print("Parse( {} ) Thread already checked! xobjTS: {} optTS: {} = {}/s".format( crc, xobj['last_ts'], g_option['last_ts'], (g_option["last_ts"]-xobj["last_ts"]) ))
+		return False
+	else:
+		print("Parse( {} ) Checking first time!".format( crc ))
 	
 	#--
 	# Check if is allowed ip then skip.
@@ -811,7 +811,7 @@ def main(argv):
 	opts           = []
 	opt_help       = False
 	opt_append     = False
-	opt_parser     = "modules.logtrash_http" # default parser for nginx and /var/log/nginx/access.log
+	opt_parser     = "modules.http"          # default parser for nginx and /var/log/nginx/access.log
 	opt_bruteforce = ""                      # Ex.: "key:0,climit:5,tlimit:10;key:1,climit:3,tlimit:3"
 	
 	#--
@@ -871,7 +871,7 @@ def main(argv):
 	# print("")
 	
 	# #
-	# #print("opt_append             :     (-A): {}".format(opt_append))
+	# # print("opt_append             :     (-A): {}".format(opt_append))
 	# print("opt_parser             :     (-p): {}".format(opt_parser))
 	# print("opt_bruteforce         :     (-b): {}".format(opt_bruteforce))
 	# print("g_opt_file_option      :     (-m): {}".format(g_opt_file_option))
@@ -966,9 +966,6 @@ def main(argv):
 	#
 	for line in sys.stdin:
 		Parse( line )
-	#
-	print("Exit!")
-	Stats()
 
 #--
 if __name__ == '__main__':
