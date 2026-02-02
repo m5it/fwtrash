@@ -73,9 +73,9 @@ def extract_log_fields(log_line):
 def XObj( line ):
 	line_check = line.split(" ")
 	if len(line_check)<=3:
-		print("http.py => XObj Failed line, skipping( {} ): {}".format( len(line_check), line ))
+		#print("http.py => XObj Failed line, skipping( {} ): {}".format( len(line_check), line ))
 		return None
-	print("http.py => XObj line( {} ): {}".format( len(line_check),line ))
+	#print("http.py => XObj line( {} ): {}".format( len(line_check),line ))
 	#--
 	tmpdate = None
 	# returned object
@@ -132,11 +132,11 @@ def XObj( line ):
 	#--
 	# (2.2.26) - addeding support to parse php error
 	if a[2]=="[error]":
-		print("ERROR!")
+		#print("ERROR!")
 		tmpdate = fix_datetime("{} {}".format( a[0], a[1] ))
-		print("ERROR, fixed date: {}".format(tmpdate))
+		#print("ERROR, fixed date: {}".format(tmpdate))
 		tmpobj = extract_log_fields( a[3] )
-		print("ERROR, fixed log: {}".format( tmpobj ))
+		#print("ERROR, fixed log: {}".format( tmpobj ))
 		# output: 
 		# {'client': '8.222.225.103,', 'server': 'aiia.grandekos.com,', 'request': 'GET /public/vendor.... HTTP/1.1', 'upstream': 'fastcgi://unix:/run/...:', 'host': '2.139.221.33'}
 		# [02/Feb/2026:18:18:22 +0000]
@@ -149,14 +149,15 @@ def XObj( line ):
 		xobj['server']   = tmpobj['server']
 	elif a[2]=="[crit]":
 		print("CRITIC ERROR!")
+		print("http.py => XObj line( {} ): {}".format( len(line_check),line ))
 		return None
 	#else:
-	print("NOT ERROR!")
+	#print("NOT ERROR!")
 	xobj["ip"]   = a[0]
 	tmp          = a[3]
-	print("XObj D1( {} ): {}".format(len(a),a))
+	#print("XObj D1( {} ): {}".format(len(a),a))
 	a            = tmp.split("] ",1)
-	print("XObj D2( {} ): {}".format(len(a),a))
+	#print("XObj D2( {} ): {}".format(len(a),a))
 	tmpdate      = a[0][1:len(a[0])]
 	tmp          = a[1]
 	a            = tmp.split("\"",2)
@@ -172,7 +173,7 @@ def XObj( line ):
 	#--
 	#
 	crc = crc32b( str.encode(json.dumps(xobj)) ) # retrive crc without date so it can be checked if is repeated
-	print("DEBUG tmpdate: ",tmpdate)
+	#print("DEBUG tmpdate: ",tmpdate)
 	#
 	xobj["date"]    = tmpdate                    # set date after generating crc
 	if tmpdate != None:
