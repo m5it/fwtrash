@@ -456,6 +456,7 @@ def Parse( line ):
 	# Check if thread was already checked if so skip/continue...
 	if g_option["last_ts"]>0 and g_option["last_ts"]>=xobj["last_ts"]:
 		cnts_checked_already+=1
+		print("Parse( {} ) Thread already checked!".format(crc))
 		return False
 	
 	#--
