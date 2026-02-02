@@ -134,7 +134,6 @@ def XObj( line ):
 	if a[2]=="[error]":
 		#print("ERROR!")
 		tmpdate = fix_datetime("{} {}".format( a[0], a[1] ))
-		#print("ERROR, fixed date: {}".format(tmpdate))
 		tmpobj = extract_log_fields( a[3] )
 		#print("ERROR, fixed log: {}".format( tmpobj ))
 		# output: 
@@ -150,7 +149,16 @@ def XObj( line ):
 	elif a[2]=="[crit]":
 		print("CRITIC ERROR!")
 		print("http.py => XObj line( {} ): {}".format( len(line_check),line ))
+		tmpdate = fix_datetime("{} {}".format( a[0], a[1] ))
+		tmpobj = extract_log_fields( a[3] )
+		print("http.py => tmpobj",tmpobj)
 		xobj["code"] = 667
+		tmpdata = "{} \"{}\" 667 0 \"{}\" \"-\"\n".format(tmpdate,tmpobj['request'],tmpobj['server'])
+		a[3] = tmpdata
+		a[0] = tmpobj["client"]
+		xobj['host']     = tmpobj['host']
+		xobj['upstream'] = tmpobj['upstream']
+		xobj['server']   = tmpobj['server']
 	#	return None
 	#else:
 	#print("NOT ERROR!")
