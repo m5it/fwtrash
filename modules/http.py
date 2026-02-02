@@ -41,7 +41,8 @@ def fix_datetime(input_str):
 
 	# Format the final output
 	formatted_date = f"{day}/{month_abbr}/{year}"
-	result = f"[{formatted_date}:{time_str} +0000]"
+	#result = f"[{formatted_date}:{time_str} +0000]"
+	result = f"[{formatted_date}:{time_str} +0000"
 
 	return result
 
