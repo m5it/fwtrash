@@ -158,130 +158,130 @@ def Load_rules():
 	#--
 	with open(g_opt_file_rules) as f:
 		for line in f:
-			if rmatch(line,"^\#.*")==False: # skip commented line with #
-				if rmatch(line,".*\#.*")!=False: # scrap only line if commented somewhere
-					g_rules.append( json.loads( pmatch(line,".*(?=\#)")[0] ) )
+			if rmatch(line,"^\\#.*")==False: # skip commented line with #
+				if rmatch(line,".*\\#.*")!=False: # scrap only line if commented somewhere
+					g_rules.append( json.loads( pmatch(line,".*(?=\\#)")[0] ) )
 				else:
 					g_rules.append( json.loads( line ) )
 	print("Loaded rules {}".format( len(g_rules )))
 	return True
 
-"""
+
 #
-def Manage_rules():
-	global g_opt_file_rules, g_rules
-	#--
-	#
-	if g_opt_file_rules=="":
-		print("ERROR: Required to define file where rules are saved or retrived. Option (-P). For more info use (-h) as help.")
-		sys.exit(1)
-	#--
-	#
-	while True:
-		#
-		compare = []
-		rule = {
-			"key" :"",  # key that is checked for trashes
-			"type":"1", # type of checking. 1=base64 regex, 2=user regex, 3=plain
-			"data":"",
-		}
-		#
-		print("1.) Show rules.")
-		print("2.) Add rule.")
-		print("3.) Edit rule.")
-		print("4.) Delete rule.")
-		print("5.) Exit")
-		#
-		cmd = input("Choose option: ")
-		#
-		if cmd=="1":
-			i=0
-			for rule in g_rules:
-				print("{}.) {}".format(i,rule))
-				i+=1
-		#
-		elif cmd=="2" or cmd=="3":
-			while True:
-				#
-				if cmd=="3":
-					i = input("rule number: ")
-					if len(g_rules)>int(i):
-						rule = g_rules[int(i)]
-					else:
-						print("rule {} dont exists.".format(i))
-						continue
-				# key
-				tmp = input("Enter key to compare{}: ".format( (" ( {} )".format(rule["key"]) if cmd=="3" else "") ))
-				if cmd=="2" and tmp=="":
-					continue
-				elif cmd=="3" and tmp=="":
-					nothing()
-				else:
-					rule["key"] = tmp
+# def Manage_rules():
+	# global g_opt_file_rules, g_rules
+	# #--
+	# #
+	# if g_opt_file_rules=="":
+		# print("ERROR: Required to define file where rules are saved or retrived. Option (-P). For more info use (-h) as help.")
+		# sys.exit(1)
+	# #--
+	# #
+	# while True:
+		# #
+		# compare = []
+		# rule = {
+			# "key" :"",  # key that is checked for trashes
+			# "type":"1", # type of checking. 1=base64 regex, 2=user regex, 3=plain
+			# "data":"",
+		# }
+		# #
+		# print("1.) Show rules.")
+		# print("2.) Add rule.")
+		# print("3.) Edit rule.")
+		# print("4.) Delete rule.")
+		# print("5.) Exit")
+		# #
+		# cmd = input("Choose option: ")
+		# #
+		# if cmd=="1":
+			# i=0
+			# for rule in g_rules:
+				# print("{}.) {}".format(i,rule))
+				# i+=1
+		# #
+		# elif cmd=="2" or cmd=="3":
+			# while True:
+				# #
+				# if cmd=="3":
+					# i = input("rule number: ")
+					# if len(g_rules)>int(i):
+						# rule = g_rules[int(i)]
+					# else:
+						# print("rule {} dont exists.".format(i))
+						# continue
+				# # key
+				# tmp = input("Enter key to compare{}: ".format( (" ( {} )".format(rule["key"]) if cmd=="3" else "") ))
+				# if cmd=="2" and tmp=="":
+					# continue
+				# elif cmd=="3" and tmp=="":
+					# nothing()
+				# else:
+					# rule["key"] = tmp
 				
-				# type
-				print("#--")
-				print("# Types of checking.")
-				print("# 1=base64 regex, 2=user regex, 3=plain comparing")
-				print("# (4-8) length comparing")
-				print("# 4= >     , 5= >=             , 6= <     , 7= <=             , 8==")
-				print("# 4=greater, 5=greater or equal, 6=smaller, 7=smaller or equal, 8=equal")
-				tmp = input("Enter type of comparing{}: ".format( (" ( {} )".format(rule["type"]) if cmd=="3" else " ( {} )".format(rule["type"])) ))
-				if tmp!="":
-					rule["type"] = tmp
+				# # type
+				# print("#--")
+				# print("# Types of checking.")
+				# print("# 1=base64 regex, 2=user regex, 3=plain comparing")
+				# print("# (4-8) length comparing")
+				# print("# 4= >     , 5= >=             , 6= <     , 7= <=             , 8==")
+				# print("# 4=greater, 5=greater or equal, 6=smaller, 7=smaller or equal, 8=equal")
+				# tmp = input("Enter type of comparing{}: ".format( (" ( {} )".format(rule["type"]) if cmd=="3" else " ( {} )".format(rule["type"])) ))
+				# if tmp!="":
+					# rule["type"] = tmp
 				
-				# data
-				tmp = input("Enter data to compare{}: ".format( (" ( {} )".format(rule["data"]) if cmd=="3" else "") ))
-				if tmp=="":
-					nothing()
-				else:
-					rule["data"] = tmp
+				# # data
+				# tmp = input("Enter data to compare{}: ".format( (" ( {} )".format(rule["data"]) if cmd=="3" else "") ))
+				# if tmp=="":
+					# nothing()
+				# else:
+					# rule["data"] = tmp
 				
-				# prompt for additional key:value
-				while True:
-					tmp = input("Enter additional key:value or empty to finish: ")
-					if tmp=="" or rmatch(tmp,".*\:.*")==False:
-						break
-					a=tmp.split(":")
-					rule[a[0]] = a[1]
-				#
-				compare.append( rule )
+				# # prompt for additional key:value
+				# while True:
+					# tmp = input("Enter additional key:value or empty to finish: ")
+					# if tmp=="" or rmatch(tmp,".*\:.*")==False:
+						# break
+					# a=tmp.split(":")
+					# rule[a[0]] = a[1]
+				# #
+				# compare.append( rule )
 				
-				#
-				tmp = input("Do you wish add another rule to compare with?(yes/no): ")
-				if tmp=="no":
-					break
+				# #
+				# tmp = input("Do you wish add another rule to compare with?(yes/no): ")
+				# if tmp=="no":
+					# break
 			
-			# write to rules
-			if cmd=="2": # add rule
-				file_write( g_opt_file_rules, "{}\n".format(json.dumps(compare)), False )
-				g_rules.append( compare )
-			else:        # edit/overwrite rule
-				file_overline( g_opt_file_rules, compare, int(i) )
-				g_rules[int(i)] = compare
-		#
-		elif cmd=="4": # delete
-			i = input("rule number: ")
-			if len(g_rules)>int(i):
-				n_rules = []
-				x=0
-				for rule in g_rules:
-					if x!=int(i):
-						n_rules.append( rule )
-					x+=1
-				#
-				x=0
-				for rule in n_rules:
-					file_write( g_opt_file_rules, "{}\n".format(json.dumps(rule)), True if x==0 else False )
-					x+=1
-				#
-				g_rules = n_rules
-			else:
-				print("rule {} dont exists.".format(i))
-				continue
-		elif cmd=="5" or cmd.lower()=="quit" or cmd.lower()=="exit":
-			break
-"""
+			# # write to rules
+			# if cmd=="2": # add rule
+				# file_write( g_opt_file_rules, "{}\n".format(json.dumps(compare)), False )
+				# g_rules.append( compare )
+			# else:        # edit/overwrite rule
+				# file_overline( g_opt_file_rules, compare, int(i) )
+				# g_rules[int(i)] = compare
+		# #
+		# elif cmd=="4": # delete
+			# i = input("rule number: ")
+			# if len(g_rules)>int(i):
+				# n_rules = []
+				# x=0
+				# for rule in g_rules:
+					# if x!=int(i):
+						# n_rules.append( rule )
+					# x+=1
+				# #
+				# x=0
+				# for rule in n_rules:
+					# file_write( g_opt_file_rules, "{}\n".format(json.dumps(rule)), True if x==0 else False )
+					# x+=1
+				# #
+				# g_rules = n_rules
+			# else:
+				# print("rule {} dont exists.".format(i))
+				# continue
+		# elif cmd=="5" or cmd.lower()=="quit" or cmd.lower()=="exit":
+			# break
+
 
 #--
 #
@@ -363,7 +363,7 @@ def Check_trash( xobj ):
 				tmp  = str(base64.b64encode(bytes(tmp, 'utf-8')),'ascii')
 				tmp1 = str(base64.b64encode(bytes(tmp1, 'utf-8')),'ascii')
 				#
-				if rmatch(tmp,"\=\=$"): # fix for bug on short rules
+				if rmatch(tmp,"\\=\\=$"): # fix for bug on short rules
 					tmp = tmp[:-3] # remove end of base64 so is possible to match anything after
 			
 			#print("DEBUG Check_trash() debug rule and req: {}={} vs {}={}".format( len(tmp1), tmp1, len(tmp), tmp))
@@ -617,7 +617,7 @@ def StatsTemp(xobj):
 		# check if key contain limit argument then limit/substr text
 		# key ex.: req;70
 		#
-		if rmatch(key,".*\;.*"):
+		if rmatch(key,".*\\;.*"):
 			a     = key.split(";")
 			key   = a[0]
 			limit = int(a[1])
