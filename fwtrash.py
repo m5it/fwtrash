@@ -464,7 +464,7 @@ def Parse( line ):
 		#--
 		# Check if bruteforce_count_key is set if so increase count and compare with time & count limit. if count is reached in specific time if set
 		#   badip action is fired.
-		if "bruteforce_count_key" in xobj:
+		if len(g_bruteforce_keys) and "bruteforce_count_key" in xobj:
 			print("DEBUG bruteforce_count_key ",xobj["bruteforce_count_key"])
 			#
 			bruteforce_enabled = True
@@ -920,8 +920,8 @@ def main(argv):
 			#
 			g_bruteforce[key] = o
 			g_bruteforce_keys.append( key )
-	print("DEBUG g_bruteforce_keys ",g_bruteforce_keys)
-	exit(1)
+	#print("DEBUG g_bruteforce_keys ",g_bruteforce_keys)
+	#exit(1)
 	#--
 	if select.select([sys.stdin,],[],[],0.0)[0]:
 		nothing()
