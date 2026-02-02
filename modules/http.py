@@ -8,7 +8,7 @@
 #--------------------------------------------------------------------
 from fwtrash import crc32b
 from fwtrash import strTs2Sec
-import json
+import json, re
 
 #--
 # Ex.:
