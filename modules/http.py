@@ -55,33 +55,37 @@ def XObj( line ):
 	# Split line of log. Some values are skipped. They can be used in future.
 	
 	#-- Normal
-	#XObj D1 ['78.128.112.74', '-', '-', '[02/Feb/2026:06:34:09 +0000] "SSH-2.0-Go" 400 157 "-" "-"\n']
-	#XObj D2 ['[02/Feb/2026:06:34:09 +0000', '"SSH-2.0-Go" 400 157 "-" "-"\n']
+	#XObj D1(4) ['78.128.112.74', '-', '-', '[02/Feb/2026:06:34:09 +0000] "SSH-2.0-Go" 400 157 "-" "-"\n']
+	#XObj D2(2) ['[02/Feb/2026:06:34:09 +0000', '"SSH-2.0-Go" 400 157 "-" "-"\n']
 
 	#-- Failed
-	#XObj D1 ['2026/01/31', '03:32:38', '[error]', '28076#28076: *64310 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 8.222.225.103, server: aiia.grandekos.com, request: "GET /public/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1", upstream: "fastcgi://unix:/run/php8.2-fpm.sock:", host: "2.139.221.31:443"\n']
+	#XObj D1( 4 ) ['2026/01/31', '03:32:38', '[error]', '28076#28076: *64310 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 8.222.225.103, server: aiia.grandekos.com, request: "GET /public/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1", upstream: "fastcgi://unix:/run/php8.2-fpm.sock:", host: "2.139.221.31:443"\n']
 	
-	#XObj D2 ['28076#28076: *64310 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 8.222.225.103, server: aiia.grandekos.com, request: "GET /public/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1", upstream: "fastcgi://unix:/run/php8.2-fpm.sock:", host: "2.139.221.31:443"\n']
+	#XObj D2( 1 ) ['28076#28076: *64310 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 8.222.225.103, server: aiia.grandekos.com, request: "GET /public/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1", upstream: "fastcgi://unix:/run/php8.2-fpm.sock:", host: "2.139.221.31:443"\n']
 	
 	#--
-	xobj["ip"]   = a[0]
-	tmp          = a[3]
-	print("XObj D1( {} ): {}".format(len(a),a))
-	a            = tmp.split("] ",1)
-	print("XObj D2( {} ): {}".format(len(a),a))
-	tmpdate      = a[0][1:len(a[0])]
-	tmp          = a[1]
-	a            = tmp.split("\"",2)
-	xobj["req"]  = a[1]
-	tmp          = a[2]
-	a            = tmp.split(" ",4)
-	xobj["code"] = a[1]
-	xobj["len"]  = a[2]
-	xobj["ref"]  = a[3]
-	tmp          = a[4]
-	a            = tmp.split("\"",2)
-	xobj["ua"]   = a[1]
-	
+	# (2.2.26) - addeding support to parse php error
+	if [[ "" == "" ]]; then
+		echo "bip"
+	else
+		xobj["ip"]   = a[0]
+		tmp          = a[3]
+		print("XObj D1( {} ): {}".format(len(a),a))
+		a            = tmp.split("] ",1)
+		print("XObj D2( {} ): {}".format(len(a),a))
+		tmpdate      = a[0][1:len(a[0])]
+		tmp          = a[1]
+		a            = tmp.split("\"",2)
+		xobj["req"]  = a[1]
+		tmp          = a[2]
+		a            = tmp.split(" ",4)
+		xobj["code"] = a[1]
+		xobj["len"]  = a[2]
+		xobj["ref"]  = a[3]
+		tmp          = a[4]
+		a            = tmp.split("\"",2)
+		xobj["ua"]   = a[1]
+	fi
 	#--
 	#
 	crc = crc32b( str.encode(json.dumps(xobj)) ) # retrive crc without date so it can be checked if is repeated
