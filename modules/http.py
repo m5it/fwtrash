@@ -150,14 +150,17 @@ def XObj( line ):
 	elif a[2]=="[crit]":
 		print("CRITIC ERROR!")
 		print("http.py => XObj line( {} ): {}".format( len(line_check),line ))
-		return None
+		xobj["code"] = 667
+	#	return None
 	#else:
 	#print("NOT ERROR!")
 	xobj["ip"]   = a[0]
 	tmp          = a[3]
-	#print("XObj D1( {} ): {}".format(len(a),a))
+	if xobj['code']==667:
+		print("XObj D1( {} ): {}".format(len(a),a))
 	a            = tmp.split("] ",1)
-	#print("XObj D2( {} ): {}".format(len(a),a))
+	if xobj['code']==667:
+		print("XObj D2( {} ): {}".format(len(a),a))
 	tmpdate      = a[0][1:len(a[0])]
 	tmp          = a[1]
 	a            = tmp.split("\"",2)
