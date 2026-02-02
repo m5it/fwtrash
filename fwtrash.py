@@ -34,6 +34,7 @@ g_opt_stat_last_trash = 5              # Stats will display last 5 trashes
 g_opt_pure_max        = 100            # Allow max 100 or X lines to be saved in memory
 g_opt_stat_last_pure  = 5              # Stats will display last 5 requests that are marked as pure/fine/ok
 #
+g_opt_stat_disable      = False        # (-d) Disable stats
 g_opt_stat_display_keys = ""           # Keys of object that should be displayed in stats. keys should be separated with comma.
                                        # Ex. keys: date,ip,repeat
 g_opt_stat_display_temp = ""           # Template for keys how they should be displayed.
@@ -784,7 +785,7 @@ def Stats():
 #--
 #
 def main(argv):
-	global g_opt_file_allowedips, g_opt_stop_next_day, g_bruteforce, g_bruteforce_keys, g_opt_stat_display_keys, g_opt_stat_display_temp, g_opt_file_rules, g_opt_file_badips, g_opt_file_trash, g_opt_comm_onbadip, gh_stats, gh_commands, version, parser, g_opt_import_parser, g_opt_file_option,g_badips
+	global g_opt_file_allowedips, g_opt_stop_next_day, g_bruteforce, g_bruteforce_keys, g_opt_stat_display_keys, g_opt_stat_display_temp, g_opt_file_rules, g_opt_file_badips, g_opt_file_trash, g_opt_comm_onbadip, gh_stats, gh_commands, version, parser, g_opt_import_parser, g_opt_file_option,g_badips,g_opt_stat_disable
 	
 	#--
 	opts           = []
@@ -795,7 +796,7 @@ def main(argv):
 	
 	#--
 	try:
-		opts, args = getopt.getopt(argv,"vhP:Aa:o:O:c:p:s:S:b:m:D",[])
+		opts, args = getopt.getopt(argv,"vhP:Aa:o:O:c:p:s:S:b:m:Dd",[])
 	except getopt.GetoptError:
 		opt_help = True
 	
@@ -823,6 +824,8 @@ def main(argv):
 			g_opt_comm_onbadip = arg
 		elif opt=="-p":
 			opt_parser = arg
+		elif opt=="-d":
+			g_opt_stat_disable = True
 		elif opt=="-s":
 			g_opt_stat_display_keys = arg
 		elif opt=="-S":
@@ -857,6 +860,7 @@ def main(argv):
 	print("g_opt_file_badips      :     (-o): {}".format(g_opt_file_badips))
 	print("g_opt_file_trash       :     (-O): {}".format(g_opt_file_trash))
 	print("g_opt_comm_onbadip     :     (-c): {}".format(g_opt_comm_onbadip))
+	print("g_opt_stat_disable     :     (-d): {}".format(g_opt_stat_disable))
 	print("g_opt_stat_display_keys:     (-s): {}".format(g_opt_stat_display_keys))
 	print("g_opt_stat_display_temp:     (-S): {}".format(g_opt_stat_display_temp))
 	print("g_opt_stop_next_day    :     (-D): {}".format(g_opt_stop_next_day))
@@ -933,8 +937,9 @@ def main(argv):
 	
 	#--
 	# thread for displaying of stats
-	gh_stats = threading.Thread(target=Stats,args=( ))
-	gh_stats.start()
+	if g_opt_stat_disable==False:
+		gh_stats = threading.Thread(target=Stats,args=( ))
+		gh_stats.start()
 	
 	#--
 	#
