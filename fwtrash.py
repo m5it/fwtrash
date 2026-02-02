@@ -430,9 +430,15 @@ def Parse( line ):
 	# x_req  can be splited and used
 	#
 	#print("DEBUG Parsing line: {}".format(line))
-	xobj = parser.XObj( line )
-	print("Parse() xobj: ")
-	print(xobj)
+	try:
+		xobj = parser.XObj( line )
+		print("Parse() xobj: ")
+		print(xobj)
+	except Exception as E:
+		print("Parse() ERROR: ",E)
+		print("Line: ",line)
+		return False
+	#
 	if xobj is None:
 		print("Parse() Failed line ",line)
 		return False
