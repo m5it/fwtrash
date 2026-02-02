@@ -52,7 +52,9 @@ def XObj( line ):
 	#
 	xobj["ip"]   = a[0]
 	tmp          = a[3]
+	print("XObj D1",a)
 	a            = tmp.split("] ",1)
+	print("XObj D2",a)
 	tmpdate      = a[0][1:len(a[0])]
 	tmp          = a[1]
 	a            = tmp.split("\"",2)
