@@ -6,19 +6,19 @@
 #--
 #
 import sys, getopt
-import re
+#import re
 import os
 import os.path
 import json
 import select
-import zlib
+#import zlib
 import base64
-from datetime import datetime
+#from datetime import datetime
 import time
 import signal
 import threading
 import importlib
-
+from functions import *
 #--
 #
 g_opt_file_allowedips = "allowedips.txt"  # (-a) Define allowed ips so you wont be blocked
@@ -77,14 +77,12 @@ def signal_handler(sig, frame):
 	global die, g_opt_file_option, g_option
 	#
 	sys.stdout.flush()
-	print('logtrash=> stopping...')
+	print('logtrash=> stopping... g_opt_file_option: ',g_opt_file_option)
 	# save options and what should be memorized
 	file_write( g_opt_file_option, json.dumps(g_option), True )
 	#
 	die=True
-	sys.exit()
-#--
-signal.signal(signal.SIGINT, signal_handler)
+	#sys.exit()
 
 #--
 #
@@ -98,90 +96,6 @@ def clearline(msg,end='\r'):
     sys.stdout.write(CURSOR_UP_ONE)
     sys.stdout.write(ERASE_LINE+'\r')
     print(msg, end=end)
-    
-#--
-# info for arguments: https://docs.python.org/3/library/time.html#time.strftime
-#
-def strTs2Sec( strTs, args="%d/%b/%Y:%H:%M:%S %z" ):
-	# 10/Oct/2021 19:30:42 +0100
-	#s = "16/08/2013 09:51:43" "%d/%b/%Y:%H:%M:%S %z"
-	#d = datetime.strptime("16/08/2013 09:51:43", "%d/%m/%Y:%H:%M:%S %z")
-	d = datetime.strptime(strTs, args)
-	return int(time.mktime(d.timetuple()))
-
-#
-def crc32b(text):
-	return "%x"%(zlib.crc32(text) & 0xFFFFFFFF)
-
-#
-def rmatch(input,regex):
-	x = re.match( regex, input )
-	if x != None:
-		return x
-	else:
-		return False
-
-#
-def pmatch(input,regex):
-	ret=[]
-	a = re.findall( regex, input, flags=re.IGNORECASE )
-	#print("pmatch a: {}".format(a))
-	if a is not None:
-		for v in a:
-			ret.append( v )
-	return ret
-
-#
-def arr_dump(a):
-	cnt=0
-	for k in a:
-		if isinstance(a,list):
-			print("k[{}] = {}".format(cnt,a[cnt]))
-		else:
-			print("k: {} => {}".format(k, a[k]))
-		cnt+=1
-
-#
-def arr_index(a,v):
-	try:
-		return a.index(v)
-	except:
-		return None
-
-#
-def file_write( filename, data, overwrite=False ):
-	f=None
-	if os.path.exists( filename )==True and overwrite==True:
-		f = open(filename,"w")
-		f.seek(0)
-		f.truncate()
-	elif os.path.exists( filename )==False:
-		f = open(filename,"w")
-	else:
-		f = open(filename,"a")
-	f.write("{}".format( data ))
-	f.close()
-
-#
-def file_overline( filename, xobj, at, isString=False ):
-	#--
-	#
-	if os.path.exists( filename )==False:
-		return False;
-	
-	lines=[]
-	with open(filename,'r') as f:
-		lines = f.readlines()
-	#
-	with open(filename,'w') as f:
-		for i,line in enumerate(lines,0):
-			if i==at:
-				if isString==False:
-					f.writelines( "{}\n".format( json.dumps(xobj) ) )
-				else:
-					f.writelines( "{}\n".format( line.strip() ) )
-			else:
-				f.writelines( "{}\n".format( line.strip() ) )
 
 #--
 #
@@ -921,7 +835,8 @@ def main(argv):
 	#--
 	if g_opt_file_option=="":
 		g_opt_file_option = "{}.opts".format(opt_parser)
-	
+	print("DEBUG g_opt_file_option: ",g_opt_file_option)
+	#exit(1)
 	#
 	print("")
 	print("---------------------------------------------------------------")
@@ -954,7 +869,8 @@ def main(argv):
 	Load_badips()
 	Load_rules()
 	Load_trash()
-	
+	#--
+	signal.signal(signal.SIGINT, signal_handler)
 	#--
 	# DEBUG ONLY
 	print("DEBUG g_badips: \n")

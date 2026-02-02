@@ -1,3 +1,5 @@
+memopts.txt
+__pycache__
 *.out
 runhere
 allowedips.txt
