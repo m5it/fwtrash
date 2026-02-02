@@ -14,7 +14,7 @@ import json
 #
 def XObj( line ):
 	adebug = line.split(" ")
-	print("http.py => XObj line( {} ): ",len(adebug),line)
+	print("http.py => XObj line( {} ): {}".format( len(adebug),line ))
 	#--
 	# returned object
 	xobj = {
