@@ -49,7 +49,17 @@ def XObj( line ):
 	
 	#--
 	# Split line of log. Some values are skipped. They can be used in future.
-	#
+	
+	#-- Normal
+	#XObj D1 ['78.128.112.74', '-', '-', '[02/Feb/2026:06:34:09 +0000] "SSH-2.0-Go" 400 157 "-" "-"\n']
+	#XObj D2 ['[02/Feb/2026:06:34:09 +0000', '"SSH-2.0-Go" 400 157 "-" "-"\n']
+
+	#-- Failed
+	#XObj D1 ['2026/01/31', '03:32:38', '[error]', '28076#28076: *64310 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 8.222.225.103, server: aiia.grandekos.com, request: "GET /public/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1", upstream: "fastcgi://unix:/run/php8.2-fpm.sock:", host: "2.139.221.31:443"\n']
+	
+	#XObj D2 ['28076#28076: *64310 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 8.222.225.103, server: aiia.grandekos.com, request: "GET /public/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1", upstream: "fastcgi://unix:/run/php8.2-fpm.sock:", host: "2.139.221.31:443"\n']
+	
+	#--
 	xobj["ip"]   = a[0]
 	tmp          = a[3]
 	print("XObj D1",a)
