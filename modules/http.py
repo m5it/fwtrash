@@ -113,6 +113,7 @@ def XObj( line ):
 
 	#--
 	#
+	afterCrc = {}
 	a = line.split(" ",3)
 	
 	#--
@@ -133,7 +134,7 @@ def XObj( line ):
 	#--
 	# (2.2.26) - addeding support to parse php error
 	if a[2]=="[error]":
-		xobj["data"] = a[3]
+		afterCrc["data"] = a[3]
 		tmpdate = fix_datetime("{} {}".format( a[0], a[1] ))
 		tmpobj = extract_log_fields( a[3] )
 		# output: 
@@ -143,17 +144,17 @@ def XObj( line ):
 		tmpdata = "{} \"{}\" 666 0 \"{}\" \"-\"\n".format(tmpdate,tmpobj['request'],tmpobj['server'])
 		a[3] = tmpdata
 		a[0] = tmpobj["client"][:-1]
-		xobj['host']     = tmpobj['host']
-		xobj['upstream'] = tmpobj['upstream']
-		xobj['server']   = tmpobj['server']
+		afterCrc["host"]     = tmpobj["host"]
+		afterCrc["upstream"] = tmpobj["upstream"]
+		afterCrc["server"]   = tmpobj["server"]
 	elif a[2]=="[crit]":
-		xobj["data"] = a[3]
+		afterCrc["data"] = a[3]
 		tmpdate = fix_datetime("{} {}".format( a[0], a[1] ))
 		tmpobj = extract_log_fields( a[3] )
 		tmpdata = "{} \"-\" 667 0 \"{}\" \"-\"\n".format(tmpdate,tmpobj['server'])
 		a[3] = tmpdata
 		a[0] = tmpobj["client"][:-1]
-		xobj['server']   = tmpobj['server']
+		afterCrc["server"] = tmpobj["server"]
 	#--
 	xobj["ip"]   = a[0]
 	tmp          = a[3]
@@ -173,7 +174,9 @@ def XObj( line ):
 	#--
 	#
 	crc = crc32b( str.encode(json.dumps(xobj)) ) # retrive crc without date so it can be checked if is repeated
-	#print("DEBUG tmpdate: ",tmpdate)
+	#
+	for k in afterCrc:
+		xobj[k] = afterCrc[k]
 	#
 	xobj["date"]    = tmpdate                    # set date after generating crc
 	if tmpdate != None:
