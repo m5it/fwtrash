@@ -13,6 +13,7 @@ import json
 #--
 #
 def XObj( line ):
+	print("http.py => XObj line: ",line)
 	#--
 	# returned object
 	xobj = {
