@@ -88,6 +88,10 @@ def XObj( line ):
 		"len"    :"",
 		"ref"    :"",
 		"ua"     :"",
+		# variables from error
+		"host"   :"",
+		"upstream":"",
+		"server":"",
 		# variables added by program
 		"repeat" :1,
 		"hash"   :"", #crc32b of line
@@ -133,11 +137,16 @@ def XObj( line ):
 		print("ERROR, fixed date: {}".format(tmpdate))
 		tmpobj = extract_log_fields( a[3] )
 		print("ERROR, fixed log: {}".format( tmpobj ))
+		# output: 
+		# {'client': '8.222.225.103,', 'server': 'aiia.grandekos.com,', 'request': 'GET /public/vendor.... HTTP/1.1', 'upstream': 'fastcgi://unix:/run/...:', 'host': '2.139.221.33'}
 		# [02/Feb/2026:18:18:22 +0000]
 		# [02/Feb/2026:18:18:22 +0000] "SSH-2.0-Go" 400 157 "-" "-"\n
-		tmpdata = "{} \"a\" 666 0 \"b\" \"c\"\n".format(tmpdate)
+		tmpdata = "{} \"{}\" 666 0 \"{}\" \"-\"\n".format(tmpdate,tmpobj['request'],tmpobj['server'])
 		a[3] = tmpdata
 		a[0] = tmpobj["client"]
+		xobj['host']     = tmpobj['host']
+		xobj['upstream'] = tmpobj['upstream']
+		xobj['server']   = tmpobj['server']
 	elif a[2]=="[crit]":
 		print("CRITIC ERROR!")
 		return None
