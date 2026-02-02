@@ -431,6 +431,9 @@ def Parse( line ):
 	#
 	#print("DEBUG Parsing line: {}".format(line))
 	xobj = parser.XObj( line )
+	if None in xobj:
+		print("Parse() Failed line ",line)
+		return False
 	#crc  = xobj["crc"]
 	crc = xobj["hash"]
 	#arr_dump(xobj)
