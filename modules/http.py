@@ -42,6 +42,10 @@ def XObj( line ):
 	# 209.141.56.212 - - [06/Oct/2021:12:42:26 +0100] "GET /config/getuser?index=0 HTTP/1.1" 404 118 "-" "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:76.0) Gecko/20100101 Firefox/76.0"
 	# short ex.:
 	# ip - - [date] "request" HTTPCODE LEN "-" "useragent"
+	# Debug ok line:
+	# http.py => XObj line( 20 ): 185.12.59.118 - - [02/Feb/2026:09:14:32 +0000] "GET / HTTP/1.1" 400 255 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:132.0) Gecko/20100101 Firefox/132.0"
+	# Debug fail line (error):
+	# ttp.py => XObj line( 30 ): 2026/02/02 07:44:47 [error] 28076#28076: *74161 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 178.217.108.153, server: aiia.grandekos.com, request: "GET /blog/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1", upstream: "fastcgi://unix:/run/php8.2-fpm.sock:", host: "2.139.221.31:443"
 
 	#--
 	#
@@ -62,9 +66,9 @@ def XObj( line ):
 	#--
 	xobj["ip"]   = a[0]
 	tmp          = a[3]
-	print("XObj D1",a)
+	print("XObj D1( {} ): {}".format(len(a),a))
 	a            = tmp.split("] ",1)
-	print("XObj D2",a)
+	print("XObj D2( {} ): {}".format(len(a),a))
 	tmpdate      = a[0][1:len(a[0])]
 	tmp          = a[1]
 	a            = tmp.split("\"",2)
