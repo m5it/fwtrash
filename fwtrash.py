@@ -143,9 +143,10 @@ def Load_badips():
 		return False;
 	#--
 	with open(g_opt_file_badips) as f:
-		for badip in f:
-			if arr_index(g_badips, badip.strip())==None:
-				g_badips.append( badip.strip() )
+		for line in f:
+			badip = line.strip().split(" ")[1]
+			if arr_index(g_badips, badip)==None:
+				g_badips.append( badip )
 	print("Loaded badips {}".format( len(g_badips )))
 	return True
 
@@ -489,7 +490,7 @@ def Parse( line ):
 			#
 			c = g_bruteforce[int(xobj["bruteforce_count_key"])]
 			print("DEBUG bruteforce_count_key c",c)
-			print("DEBUG g_bruteforce: ",g_bruteforce)
+			#print("DEBUG g_bruteforce: ",g_bruteforce)
 			#
 			c["count"] += 1
 			c["timelast"] = int( time.time() )
@@ -528,7 +529,7 @@ def Parse( line ):
 			# Write not existing bad ip into specific file
 			#
 			if g_opt_file_badips!="":
-				file_write( g_opt_file_badips, "{}\n".format(xobj["ip"]) )
+				file_write( g_opt_file_badips, "{} {}\n".format(xobj["last_ts"],xobj["ip"]) )
 			#--
 			# Exec command on not existing bad ip
 			#
