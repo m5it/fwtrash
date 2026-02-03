@@ -451,7 +451,7 @@ def Parse( line ):
 	#--
 	# check if line is trash/attacker/..:)
 	tmp  = Check_trash( xobj )
-	print("Check_trash({}): {}".format( crc, tmp ))
+	#print("Check_trash({}): {}".format( crc, tmp ))
 	#
 	xobj = tmp["xobj"]
 	
@@ -463,8 +463,10 @@ def Parse( line ):
 		cnts_checked_already+=1
 		print("Parse( {} ) Thread already checked! IP: {}, xobjTS: {} optTS: {} = {}/s".format( crc, xobj["ip"], xobj['last_ts'], g_option['last_ts'], (g_option["last_ts"]-xobj["last_ts"]) ))
 		return False
-	else:
-		print("Parse( {} ) Checking first time: {}".format( crc, xobj["ip"] ))
+	elif xobj['blocked']:
+		print("Parse( {} ) Blocked {}".format( crc, xobj['ip'] ))
+	#else:
+	#	print("Parse( {} ) Checking first time: {}".format( crc, xobj["ip"] ))
 	
 	#--
 	# Check if is allowed ip then skip.
@@ -542,7 +544,7 @@ def Parse( line ):
 		#--
 		# check if trash already exists in g_trash
 		i = Find_trash( crc )
-		print("Find_trash( {} ): {}".format( crc, i ))
+		#print("Find_trash( {} ): {}".format( crc, i ))
 		#
 		if i is not None: # trash exists
 			#
