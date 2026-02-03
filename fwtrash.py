@@ -435,8 +435,8 @@ def Parse( line ):
 	#print("DEBUG Parsing line: {}".format(line))
 	try:
 		xobj = parser.XObj( line )
-		print("Parse() xobj: ")
-		print(xobj)
+		#print("Parse() xobj: ")
+		#print(xobj)
 	except Exception as E:
 		print("Parse() ERROR: ",E)
 		print("Line: ",line)
