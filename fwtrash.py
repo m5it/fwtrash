@@ -522,7 +522,7 @@ def Parse( line ):
 		# check if bad ip exists
 		# xobj["ip"] can be empty when running logtrash on auth.log to observe ssh service
 		if (xobj["ip"] != "" and arr_index(g_badips,xobj["ip"]) == None and bruteforce_enabled==False) or (xobj["ip"] != "" and arr_index(g_badips,xobj["ip"]) == None and bruteforce_enabled==True and bruteforced):
-			print("BLOCKING {}, xobj: {}".format(xorg['ip'], xobj))
+			print("BLOCKING {}, xobj: {}".format(xobj['ip'], xobj))
 			#
 			g_badips.append( xobj["ip"] )
 			#
