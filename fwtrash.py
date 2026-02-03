@@ -42,19 +42,20 @@ g_opt_stat_display_temp = ""           # Template for keys how they should be di
 g_opt_stop_next_day = False            # (-D) If True stop the program when new day begin.
 
 #
-version         = 0.6
-die             = False
-parser          = None
-g_allowedips    = []
-g_badips        = []          # array of bad ips
-g_rules         = []          # array to load rules on which we search for trashy requests
-g_trash         = []          # array of trashy requests
-g_pure          = []          # array of pure requests so they can be better monitored in Stats()
-g_bruteforce    = [None]*1000 # array of objects. initialized in Main() if (-b) option is used.
+version          = 0.6
+die              = False
+parser           = None
+g_allowedips     = []
+g_badips         = []          # array of bad ips
+g_rules          = []          # array to load rules on which we search for trashy requests
+g_trash          = []          # array of trashy requests
+g_pure           = []          # array of pure requests so they can be better monitored in Stats()
+g_bruteforce     = [None]*1000 # array of objects. initialized in Main() if (-b) option is used.
 g_bruteforce_keys = []        #
                               # key option should be 0-999
                               # Ex.: "key:0,climit:5,tlimit:10;key:1,climit:3,tlimit:3"
-g_curday        = datetime.today().strftime('%d') # used to check if new day began with option "g_opt_stop_next_day"=(True)
+g_bruteforce_mem = {}
+g_curday         = datetime.today().strftime('%d') # used to check if new day began with option "g_opt_stop_next_day"=(True)
 
 # retrived from g_opt_file_option aka options
 g_option        = {
@@ -521,6 +522,7 @@ def Parse( line ):
 		# check if bad ip exists
 		# xobj["ip"] can be empty when running logtrash on auth.log to observe ssh service
 		if (xobj["ip"] != "" and arr_index(g_badips,xobj["ip"]) == None and bruteforce_enabled==False) or (xobj["ip"] != "" and arr_index(g_badips,xobj["ip"]) == None and bruteforce_enabled==True and bruteforced):
+			print("BLOCKING {}, xobj: {}".format(xorg['ip'], xobj))
 			#
 			g_badips.append( xobj["ip"] )
 			#
