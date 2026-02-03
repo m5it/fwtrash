@@ -1,3 +1,5 @@
+access.log
+out.cap
 memopts.txt
 __pycache__
 *.out
