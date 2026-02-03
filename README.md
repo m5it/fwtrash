@@ -50,13 +50,19 @@ tail -f run_http.out
 tail -f run_ssh.out
 
 #-- Examples with arguments and options from run_http.sh, run_ssh.sh
-# 1.) Example with module "http".
+# 1.) Example with module `http`
 tail -f /var/log/nginx/access.log | ./fwtrash.py -P rules/http.rules -o badips.out -O trash_http.out -p modules.http -s "date,ip,repeat,req;60,ref;20,ua;20,code,len" -S "[--DATE] - ([--REPEAT],[--CODE],[--LEN]) [--IP] => [--REQ] ua: [--UA], ref: [--REF]" -c "iptables -A INPUT -s [--IP]/32 -j DROP" -b "key:1,climit:3,tlimit:5;key:2,climit:3,tlimit:6"
 
-# 2.) Example module "ssh"
+# 2.) Example module `ssh`
 tail -f /var/log/auth.log | ./fwtrash.py -o badips.out -O trash_ssh.out -P rules/ssh.rules -p modules.ssh -s "date,ip,repeat,message;100" -S "[--DATE] [--IP]([--REPEAT]) => [--MESSAGE]" -c "iptables -A INPUT -s [--IP]/32 -j DROP" -b "key:0,climit:3,tlimit:60;key:1,climit:3,tlimit:120"
 
+#.) Example module `tcpdump`
+tcpdump -r out.cap -nn -s0 port 443 or 80 -W 99 -l | \
+	  python fwtrash.py -D -d -P rules/tcpdump.rules \
+	  -a allowedips.txt -o badips_tcpdump.out -O trash_tcpdump.out \
+	  -p modules.tcpdump -c "echo \"BADIP: [--IP]\""
 
+#--
 To get more help write "./fwtrash.py -h"
 
 
@@ -118,6 +124,25 @@ Aug  9 07:02:36 ip-172-31-3-59 systemd-logind[34426]: Session 3050 logged out. W
 Aug  9 07:02:36 ip-172-31-3-59 systemd-logind[34426]: Removed session 3050.
 
 
+#--------------------------------------------------------------------
+* v0.6 - 03.02.2026
+    Updates and bugfixes for previous versions.
+    Update for python 3.14
+    Updates and bugfixes of modules
+    Added module.tcpdump (specially focused on spoofed attack to http server)
+  Examples tcpdump:
+  # Reading dumped .cap file and parsing to fwtrash.py
+  #---------------------------------------------------
+  tcpdump -r out.cap -nn -s0 port 443 or 80 -W 99 -l | \
+	  python fwtrash.py -D -d -P rules/tcpdump.rules \
+	  -a allowedips.txt -o badips_tcpdump.out -O trash_tcpdump.out \
+	  -p modules.tcpdump -c "echo \"BADIP: [--IP]\""
+	
+  # Playing with attacker packets. Sort them and check what ips and how many times are used.
+  #---------------------------------------------------
+  # For spoofed ips attack on http server:
+  #--
+  tcpdump -r out.cap -nn -s0 port 443 or 80 -W 99 -l | awk /.*\\[S\\].*win.64240\,\.options.\\[mss.1300\\,nop\\,wscale.8\\,nop\\,nop\\,sackOK\\]\\,.length.0/'{print $3}' | awk -F'.' '{print $1"."$2"."$3}' | uniq -c | sort | awk '{print $2}' | uniq -c | sort
 #--------------------------------------------------------------------
 *  version 0.5
 Added clearing of bruteforce stats into thread Stats() that run in loop and sleep 1/s so is perfect for clearing.
