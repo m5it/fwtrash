@@ -1,13 +1,13 @@
-import os
+import os, json
 from functions import *
 #--
 #
 def Load_option( opts:list={} ):
 	#
-	opt_file_option = opts['file_option'] if "file_options" in opts else None
+	opt_file_option = opts['file'] if "file" in opts else None
 	#
 	if opt_file_option==None or os.path.exists( opt_file_option )==False:
-		return None
+		return {}
 	
 	print("loading options...")
 	
@@ -19,18 +19,18 @@ def Load_option( opts:list={} ):
 
 #--
 #
-def Load_allowedips( opts:list={} ):
+def Load_allowedips( ips:list, opts:list={} ):
 	#
-	opt_file_allowedips = opts['file_allowedips'] if "file_allowedips" in opts else None
+	opt_file_allowedips = opts['file'] if "file" in opts else None
 	#
-	ret = []
+	ret = ips
 	#
 	if os.path.exists( opt_file_allowedips )==False:
-		return None;
+		return ret;
 	#
 	with open(opt_file_allowedips) as f:
 		for ip in f:
-			if arr_index(g_allowedips, ip.strip())==None:
+			if arr_index(ret, ip.strip())==None:
 				#g_allowedips.append( ip.strip() )
 				ret.append( ip.strip() )
 	print("Loaded allowedips {}".format( len(ret) ))
@@ -39,54 +39,61 @@ def Load_allowedips( opts:list={} ):
 
 #--
 #
-def Load_badips( opts:list={} ):
-	global g_opt_file_badips, g_badips
-	#--
+def Load_badips( ips:list, opts:list={} ):
 	#
-	if os.path.exists( g_opt_file_badips )==False:
-		return False;
+	opt_file_badips = opts['file'] if "file" in opts else None
+	#
+	ret = ips
+	#
+	if os.path.exists( opt_file_badips )==False:
+		return ret;
 	#--
-	with open(g_opt_file_badips) as f:
+	with open(opt_file_badips) as f:
 		for line in f:
 			badip = line.strip().split(" ")[1]
-			if arr_index(g_badips, badip)==None:
-				g_badips.append( badip )
-	print("Loaded badips {}".format( len(g_badips )))
-	return True
+			if arr_index(ret, badip)==None:
+				ret.append( badip )
+	print("Loaded badips {}".format( len(ret) ))
+	return ret
 
 #--
 #
-def Load_rules( opts:list={} ):
-	global g_opt_file_rules, g_rules
-	#--
+def Load_rules( rules:list, opts:list={} ):
 	#
-	if os.path.exists( g_opt_file_rules )==False:
-		return False;
+	opt_file_rules = opts['file'] if "file" in opts else None
+	print("Load_rules() opt_file_rules: {}".format(opt_file_rules))
+	#
+	ret = rules
+	#
+	if os.path.exists( opt_file_rules )==False:
+		return ret;
 	#--
-	with open(g_opt_file_rules) as f:
+	with open(opt_file_rules) as f:
 		for line in f:
-			if rmatch(line,"^\\#.*")==False: # skip commented line with #
-				if rmatch(line,".*\\#.*")!=False: # scrap only line if commented somewhere
-					g_rules.append( json.loads( pmatch(line,".*(?=\\#)")[0] ) )
-				else:
-					g_rules.append( json.loads( line ) )
-	print("Loaded rules {}".format( len(g_rules )))
-	return True
+			if rmatch(line,r'^#|\s*$'):
+				continue
+			if rmatch(line,".*\\#.*")!=False: # scrap only line if commented somewhere
+				ret.append( json.loads( pmatch(line,".*(?=\\#)")[0] ) )
+			else:
+				ret.append( json.loads( line ) )
+	print("Loaded rules {}".format( len(ret) ))
+	return ret
 
 #--
 #
-def Load_trash( opts:list={} ):
-	global g_opt_file_trash, g_trash
-	#--
+def Load_trash( trash:list, opts:list={} ):
 	#
-	if os.path.exists( g_opt_file_trash )==False:
-		return False;
+	opt_file_trash = opts['file'] if "file" in opts else None
+	#
+	ret = trash
+	#
+	if os.path.exists( opt_file_trash )==False:
+		return ret;
 	#--
-	with open(g_opt_file_trash) as f:
+	with open(opt_file_trash) as f:
 		for dump in f:
-			g_trash.append( json.loads(dump) )
-	print("Loaded trash {}".format( len(g_trash )))
-	print("")
-	return True
+			ret.append( json.loads(dump) )
+	print("Loaded trash {}".format( len(ret) ))
+	return ret
 
 #-------- END of FILE --------

@@ -21,13 +21,28 @@ from func_load import *
 #--
 Options = {
 	"file_option":"",          # (-m) Set file for options/infos that should be memorized. Ex.: last_ts
+	"file_badips":"",          # (-o) Can be set file to writeout bad ips
+	"file_allowedips":"",      # (-a) Define allowed ips so you wont be blocked
+	"file_trash":"",           # (-O) Can be set file to writeout trash
+	"file_rules":"",           # (-P) Set file of rules
+}
+#
+Stats = {
+	"repeat_trash":0,
+	"skip_blocked":0,
+	"flood":0,
+	"check_first":0,
+	"all":0,
+	"allowed":0,
+	"blocking":0,
+	"blocked":0,
 }
 #
 g_opt_verbose         = True              # (-V)
-g_opt_file_allowedips = "allowedips.txt"  # (-a) Define allowed ips so you wont be blocked
-g_opt_file_badips   = ""                  # (-o) Can be set file to writeout bad ips
-g_opt_file_trash    = ""                  # (-O) Can be set file to writeout trash
-g_opt_file_rules    = ""                  # (-P) Set file of rules
+#g_opt_file_allowedips = "allowedips.txt"  # (-a) Define allowed ips so you wont be blocked
+#g_opt_file_badips   = ""                  # (-o) Can be set file to writeout bad ips
+#g_opt_file_trash    = ""                  # (-O) Can be set file to writeout trash
+#g_opt_file_rules    = ""                  # (-P) Set file of rules
 #
 g_opt_comm_onbadip = ""                # (-c) Command that is executed when trash is found and its ip dont exists between g_badips
 g_opt_autosave_option = 10             # Autosave options every 10th thread retrived from log
@@ -90,9 +105,12 @@ def out(text:str,opts:list={}):
 	return True
 #
 def cleanup():
-	global Options,g_option
+	global Options,Stats,g_option
 	out("cleanup() START",{'verbose':True})
 	file_write( Options['file_option'], json.dumps(g_option), True )
+	#
+	print("Stats: ")
+	print(Stats)
 	return True
 #
 def handle_exception(exc_type, exc_value, exc_traceback):
@@ -178,7 +196,6 @@ def Check_trash( xobj ):
 	acompare = [None]*len(g_rules)
 	#
 	for rules in g_rules:
-		print("Check_trash() D1 rules: ",rules)
 		cntret = 0 # if cntret same with len of rules then comparison succided
 		#
 		for rule in rules:
@@ -242,7 +259,6 @@ def Check_trash( xobj ):
 			#   Ex.: -b "key:0,climit:5,tlimit:10;key:1,climit:3,tlimit:3"
 			#
 			if "bruteforce_count_key" in rule:
-				print("Setting key which is used to check brutefoce: ",rule["bruteforce_count_key"])
 				xobj["bruteforce_count_key"] = rule["bruteforce_count_key"]
 			#
 			if ret==True:
@@ -260,7 +276,7 @@ def Check_trash( xobj ):
 # Real parsing of line happen in defined module (-p). Ex.: logtrash_http aka logtrash_http.py and function XObj(...)...
 #
 def Parse( line ):
-	global Options, g_allowedips, g_bruteforce, g_bruteforce_keys, parser, g_trash, g_badips, cnts_allowed, cnts_checked_already, cnts_autosave_option, cnts_all, cnts_pure, cnts_trash, g_opt_file_badips, g_opt_file_trash, g_opt_comm_onbadip, cnt_autosave_option, g_opt_autosave_option, g_option, g_opt_pure_max, g_pure
+	global Options, Stats, g_allowedips, g_bruteforce, g_bruteforce_keys, parser, g_trash, g_badips, cnts_allowed, cnts_checked_already, cnts_autosave_option, cnts_all, cnts_pure, cnts_trash, g_opt_comm_onbadip, cnt_autosave_option, g_opt_autosave_option, g_option, g_opt_pure_max, g_pure
 	
 	#--
 	# function XObj(...)
@@ -282,35 +298,40 @@ def Parse( line ):
 	if xobj is None:
 		print("Parse() Failed line ",line)
 		return False
+	Stats['all']+=1
 	#crc  = xobj["crc"]
 	crc = xobj["hash"]
+	print("Parse() {} - {}".format(xobj['last_ts'],xobj['ip']))
 	#arr_dump(xobj)
 	#--
 	# check if line is trash/attacker/..:)
 	tmp  = Check_trash( xobj )
 	#print("Check_trash({}): {}".format( crc, tmp ))
-	#
 	xobj = tmp["xobj"]
 	
 	#--
 	# Check if thread was already checked if so skip/continue...
 	if "isTrash" in tmp and tmp["isTrash"] and xobj["blocked"]==False:
 		print("Parse( {} ) Repeating check on trash: {}".format( crc,xobj["ip"] ))
+		Stats['repeat_trash']+=1
 	elif g_option["last_ts"]>0 and g_option["last_ts"]>=xobj["last_ts"]:
 		cnts_checked_already+=1
 		print("Parse( {} ) Thread already checked! IP: {}, xobjTS: {} optTS: {} = {}/s".format( crc, xobj["ip"], xobj['last_ts'], g_option['last_ts'], (g_option["last_ts"]-xobj["last_ts"]) ))
-		return False
+		Stats['flood']+=1
+		if xobj['blocked']:
+			Stats['skip_blocked']+=1
+		#return False
 	elif xobj['blocked']:
 		print("Parse( {} ) Blocked {}".format( crc, xobj['ip'] ))
-	#else:
-	#	print("Parse( {} ) Checking first time: {}".format( crc, xobj["ip"] ))
+		Stats['skip_blocked']+=1
+	else:
+		Stats['check_first']+=1
 	
 	#--
 	# Check if is allowed ip then skip.
-	#if xobj["ip"] != "" and arr_index(g_badips,xobj["ip"]) == None:
 	if xobj["ip"] != "" and arr_index(g_allowedips,xobj["ip"]) != None:
-		#print("Allowed ip {}, skipping...".format( xobj["ip"] ))
-		cnts_allowed+=1
+		Stats['allowed']+=1
+		return True
 	#--
 	#
 	elif tmp["isTrash"]:
@@ -360,7 +381,7 @@ def Parse( line ):
 				else:
 					c['ips'][tmpcrc]['blocked']+=1
 				# {'count': 0, 'timefirst': 0, 'timelast': 0, 'reached': 1642, 'ips': {'773f7bbe': {'ip': '51.195.244.175', 'blocked': 1, 'ts_first': 1770137384.5395854},
-				print("Blocking tmpcrc",tmpcrc)
+				print("Blocking ipcrc: {}, ip: {}".format(tmpcrc,xobj['ip']))
 				print("DEBUG bruteforce_count_key: ",xobj["bruteforce_count_key"])
 				print("count: {}".format( c['count'] ))
 				print("tf: {}".format( c['timefirst'] ))
@@ -376,9 +397,11 @@ def Parse( line ):
 		if (xobj["ip"] != "" and arr_index(g_badips,xobj["ip"]) == None and bruteforce_enabled==False) or (xobj["ip"] != "" and arr_index(g_badips,xobj["ip"]) == None and bruteforce_enabled==True and bruteforced):
 			print("BLOCKING {}, xobj: {}".format(xobj['ip'], xobj))
 			#
+			Stats['blocking']+=1
 			g_badips.append( xobj["ip"] )
 			#
 			blocked = True
+			xobj['blocked'] = True
 			#--
 			# Write not existing bad ip into specific file
 			#
@@ -392,6 +415,8 @@ def Parse( line ):
 				os.system(cmd)
 		else:
 			print("Bad IP is blocked {}".format(xobj))
+			xobj['blocked'] = True
+			Stats['blocked']+=1
 		
 		#--
 		# check if trash already exists in g_trash
@@ -409,9 +434,9 @@ def Parse( line ):
 			g_trash.pop(i)
 			g_trash.append(xobj)
 			#
-			if g_opt_file_trash!="":
+			if Options['file_trash']!="":
 				#file_overline( g_opt_file_trash, xobj, i )
-				file_write(g_opt_file_trash, "{}\n".format( json.dumps(xobj) ), True)
+				file_write(Options['file_trash'], "{}\n".format( json.dumps(xobj) ), True)
 		else:             # trash dont exists
 			#
 			xobj["blocked"]     = blocked
@@ -420,8 +445,8 @@ def Parse( line ):
 			#
 			g_trash.append( xobj )
 			#
-			if g_opt_file_trash!="":
-				file_write( g_opt_file_trash, "{}\n".format( json.dumps(xobj) ) )
+			if Options['file_trash']!="":
+				file_write( Options['file_trash'], "{}\n".format( json.dumps(xobj) ) )
 		#
 		cnts_trash += 1
 	else:
@@ -521,7 +546,7 @@ def StatsTemp(xobj):
 # function Stats() used to display stats and maybe some other functionality like for option g_opt_stop_next_day
 # Function is running as thread in loop with timeout 1s.
 #
-def Stats():
+def StatsDisplay():
 	global g_curday, g_opt_stop_next_day, g_rules,g_bruteforce, g_bruteforce_keys, die,cnts_allowed, cnts_all, cnts_pure, cnts_trash, g_trash, g_pure, g_badips, g_opt_stat_last_trash, g_opt_stat_last_pure
 	
 	cnt             = 0
@@ -665,7 +690,7 @@ def Stats():
 #--
 #
 def main(argv):
-	global Options, g_opt_file_allowedips, g_opt_stop_next_day, g_bruteforce, g_bruteforce_keys, g_opt_stat_display_keys, g_opt_stat_display_temp, g_opt_file_rules, g_opt_file_badips, g_opt_file_trash, g_opt_comm_onbadip, gh_stats, gh_commands, version, parser, g_opt_import_parser,g_badips,g_opt_stat_disable
+	global Options, g_opt_stop_next_day, g_bruteforce, g_bruteforce_keys, g_opt_stat_display_keys, g_opt_stat_display_temp, g_opt_file_rules, g_opt_file_badips, g_opt_file_trash, g_opt_comm_onbadip, gh_stats, gh_commands, version, parser, g_opt_import_parser,g_badips,g_opt_stat_disable, g_allowedips, g_rules, g_trash
 	
 	#--
 	opts           = []
@@ -691,15 +716,15 @@ def main(argv):
 		elif opt=="-A":
 			opt_append = True
 		elif opt=="-P":
-			g_opt_file_rules = arg
+			Options['file_rules'] = arg
 		elif opt=="-m":
 			Options['file_option'] = arg
 		elif opt=="-o":
 			g_opt_file_badips = arg
 		elif opt=="-a":
-			g_opt_file_allowedips = arg
+			Options['file_allowedips'] = arg
 		elif opt=="-O":
-			g_opt_file_trash = arg
+			Options['file_trash'] = arg
 		elif opt=="-c":
 			g_opt_comm_onbadip = arg
 		elif opt=="-p":
@@ -736,7 +761,7 @@ def main(argv):
 	# print("opt_bruteforce         :     (-b): {}".format(opt_bruteforce))
 	# print("file_option            :     (-m): {}".format(Options['file_option']))
 	# print("g_opt_file_rules       :     (-P): {}".format(g_opt_file_rules))
-	# print("g_opt_file_allowedips  :     (-a): {}".format(g_opt_file_allowedips))
+	# print("file_allowedips        :     (-a): {}".format(Options['file_allowedips']))
 	# print("g_opt_file_badips      :     (-o): {}".format(g_opt_file_badips))
 	# print("g_opt_file_trash       :     (-O): {}".format(g_opt_file_trash))
 	# print("g_opt_comm_onbadip     :     (-c): {}".format(g_opt_comm_onbadip))
@@ -748,17 +773,24 @@ def main(argv):
 	
 	#--
 	#
-	Load_option( {'file_option':Options['file_option'],} )
-	Load_allowedips()
-	Load_badips()
-	Load_rules()
-	Load_trash()
+	Load_option( {'file':Options['file_option'],} )
+	g_allowedips = Load_allowedips( g_allowedips, {'file':Options['file_allowedips'],})
+	g_badips     = Load_badips( g_badips, {'file':Options['file_badips'],} )
+	g_rules      = Load_rules( g_rules, {'file':Options['file_rules'],} )
+	g_trash      = Load_trash( g_trash, {'file':Options['file_trash'],} )
 	#--
 	# DEBUG ONLY
 	#print("DEBUG g_badips: \n")
 	#arr_dump( g_badips )
-	#print("DEBUG g_allowedips: \n")
-	#arr_dump( g_allowedips )
+	print("DEBUG g_allowedips: \n")
+	arr_dump( g_allowedips )
+	print("DEBUG g_rules({}): \n".format( len(g_rules) ))
+	arr_dump( g_rules )
+	print("DEBUG g_trash: \n")
+	arr_dump( g_trash )
+	
+	print("Sleeping for 3/s")
+	time.sleep(3);
 	
 	#--
 	if   opt_help:
@@ -818,7 +850,7 @@ def main(argv):
 	#--
 	# thread for displaying of stats
 	if g_opt_stat_disable==False:
-		gh_stats = threading.Thread(target=Stats,args=( ))
+		gh_stats = threading.Thread(target=StatsDisplay,args=( ))
 		gh_stats.start()
 	
 	#--

@@ -174,6 +174,9 @@ def XObj( line ):
 	tmp          = a[2]
 	a            = tmp.split(" ",4)
 	xobj["code"] = a[1]
+	if xobj['code']=='404':
+		afterCrc['req'] = xobj['req']
+		xobj['req'] = ""
 	xobj["len"]  = a[2]
 	xobj["ref"]  = a[3]
 	tmp          = a[4]

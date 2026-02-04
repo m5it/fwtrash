@@ -62,8 +62,12 @@ tcpdump -r out.cap -nn -s0 port 443 or 80 -W 99 -l | \
 	  -a allowedips.txt -o badips_tcpdump.out -O trash_tcpdump.out \
 	  -p modules.tcpdump -c "echo \"BADIP: [--IP]\""
 
+#.) Get process pid from name with `ps` or `pgrep`
+ps aux | grep nginx
+pgrep -l nginx
+
 #.) Example read process memory with `ps`
-sudo ps -p 582341 -o "%cpu %mem"
+ps -p 582341 -o "%cpu %mem"
 
 #--
 To get more help write "./fwtrash.py -h"
