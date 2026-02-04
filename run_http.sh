@@ -4,7 +4,7 @@
 #-----------------------------------
 
 #
-LOG="/var/log/nginx/access.log"
+LOG="/var/log/nginx/*.log"
 #
 if [[ $(cat $LOG | wc -l) == "0" ]]; then
 	echo "Log file $LOG is empty, exiting.";
