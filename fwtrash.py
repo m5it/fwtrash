@@ -351,7 +351,11 @@ def Parse( line ):
 			#
 			c = g_bruteforce[int(xobj["bruteforce_count_key"])]
 			#
-			c["count"] += 1
+			if "count" in c:
+				c["count"] += 1
+			else:
+				c["count"] = 1
+			#
 			c["timelast"] = int( time.time() )
 			#
 			if c["timefirst"]==0:
