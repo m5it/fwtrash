@@ -351,6 +351,8 @@ def Parse( line ):
 			#
 			c = g_bruteforce[int(xobj["bruteforce_count_key"])]
 			#
+			print("DEBUG C: ",c)
+			exit(1)
 			if "count" in c:
 				c["count"] += 1
 			else:
