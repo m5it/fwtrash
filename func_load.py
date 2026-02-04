@@ -45,7 +45,7 @@ def Load_badips( ips:list, opts:list={} ):
 	#
 	ret = ips
 	#
-	if os.path.exists( opt_file_badips )==False:
+	if opt_file_badips==None or os.path.exists( opt_file_badips )==False:
 		return ret;
 	#--
 	with open(opt_file_badips) as f:
@@ -65,7 +65,7 @@ def Load_rules( rules:list, opts:list={} ):
 	#
 	ret = rules
 	#
-	if os.path.exists( opt_file_rules )==False:
+	if opt_file_rules==None or os.path.exists( opt_file_rules )==False:
 		return ret;
 	#--
 	with open(opt_file_rules) as f:
@@ -87,7 +87,7 @@ def Load_trash( trash:list, opts:list={} ):
 	#
 	ret = trash
 	#
-	if os.path.exists( opt_file_trash )==False:
+	if opt_file_trash==None or os.path.exists( opt_file_trash )==False:
 		return ret;
 	#--
 	with open(opt_file_trash) as f:
