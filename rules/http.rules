@@ -25,6 +25,7 @@
 [{"key": "code", "type": "3", "data": "408"}]
 [{"key": "ua", "type": "2", "data": "MJ12bot"}]
 [{"key": "ua", "type": "2", "data": ".*bot.*"}]
+[{"key": "req", "type": "2", "data": "CONNECT.*"}]
 #-- ERROR
 [{"key": "code", "type": "3", "data": "666", "bruteforce_count_key": "3"}]
 #-- CRITIC
