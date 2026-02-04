@@ -25,7 +25,7 @@ def Load_allowedips( ips:list, opts:list={} ):
 	#
 	ret = ips
 	#
-	if os.path.exists( opt_file_allowedips )==False:
+	if opt_file_allowedips==None or os.path.exists( opt_file_allowedips )==False:
 		return ret;
 	#
 	with open(opt_file_allowedips) as f:
