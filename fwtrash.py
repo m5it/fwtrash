@@ -19,12 +19,14 @@ import importlib
 from functions import *
 from func_load import *
 #--
+Options = {
+	"file_option":"",          # (-m) Set file for options/infos that should be memorized. Ex.: last_ts
+}
 #
 g_opt_verbose         = True              # (-V)
 g_opt_file_allowedips = "allowedips.txt"  # (-a) Define allowed ips so you wont be blocked
 g_opt_file_badips   = ""                  # (-o) Can be set file to writeout bad ips
 g_opt_file_trash    = ""                  # (-O) Can be set file to writeout trash
-g_opt_file_option   = ""                  # (-m) Set file for options/infos that should be memorized. Ex.: last_ts
 g_opt_file_rules    = ""                  # (-P) Set file of rules
 #
 g_opt_comm_onbadip = ""                # (-c) Command that is executed when trash is found and its ip dont exists between g_badips
@@ -57,7 +59,7 @@ g_bruteforce_keys = []        #
 g_bruteforce_mem = {}
 g_curday         = datetime.today().strftime('%d') # used to check if new day began with option "g_opt_stop_next_day"=(True)
 
-# retrived from g_opt_file_option aka options
+# retrived from Options['file_option'] aka options
 g_option        = {
 	"last_ts":0,
 }
@@ -88,7 +90,9 @@ def out(text:str,opts:list={}):
 	return True
 #
 def cleanup():
+	global Options,g_option
 	out("cleanup() START",{'verbose':True})
+	file_write( Options['file_option'], json.dumps(g_option), True )
 	return True
 #
 def handle_exception(exc_type, exc_value, exc_traceback):
@@ -109,12 +113,12 @@ def handle_exception(exc_type, exc_value, exc_traceback):
 atexit.register(cleanup)
 sys.excepthook = handle_exception
 # def signal_handler(sig, frame):
-	# global die, g_opt_file_option, g_option
+	# global die, Options['file_option'], g_option
 	# #
 	# sys.stdout.flush()
-	# print('logtrash=> stopping... g_opt_file_option: ',g_opt_file_option)
+	# print('logtrash=> stopping... Options['file_option']: ',Options['file_option'])
 	# # save options and what should be memorized
-	# file_write( g_opt_file_option, json.dumps(g_option), True )
+	# file_write( Options['file_option'], json.dumps(g_option), True )
 	# #
 	# die=True
 	# #sys.exit()
@@ -256,7 +260,7 @@ def Check_trash( xobj ):
 # Real parsing of line happen in defined module (-p). Ex.: logtrash_http aka logtrash_http.py and function XObj(...)...
 #
 def Parse( line ):
-	global g_allowedips, g_bruteforce, g_bruteforce_keys, parser, g_trash, g_badips, cnts_allowed, cnts_checked_already, cnts_autosave_option, cnts_all, cnts_pure, cnts_trash, g_opt_file_badips, g_opt_file_trash, g_opt_comm_onbadip, cnt_autosave_option, g_opt_autosave_option, g_opt_file_option, g_option, g_opt_pure_max, g_pure
+	global Options, g_allowedips, g_bruteforce, g_bruteforce_keys, parser, g_trash, g_badips, cnts_allowed, cnts_checked_already, cnts_autosave_option, cnts_all, cnts_pure, cnts_trash, g_opt_file_badips, g_opt_file_trash, g_opt_comm_onbadip, cnt_autosave_option, g_opt_autosave_option, g_option, g_opt_pure_max, g_pure
 	
 	#--
 	# function XObj(...)
@@ -441,7 +445,7 @@ def Parse( line ):
 	#
 	if cnt_autosave_option>=g_opt_autosave_option:
 		# save options and what should be memorized
-		file_write( g_opt_file_option, json.dumps(g_option), True )
+		file_write( Options['file_option'], json.dumps(g_option), True )
 		cnt_autosave_option=0
 		cnts_autosave_option+=1
 	else:
@@ -661,7 +665,7 @@ def Stats():
 #--
 #
 def main(argv):
-	global g_opt_file_allowedips, g_opt_stop_next_day, g_bruteforce, g_bruteforce_keys, g_opt_stat_display_keys, g_opt_stat_display_temp, g_opt_file_rules, g_opt_file_badips, g_opt_file_trash, g_opt_comm_onbadip, gh_stats, gh_commands, version, parser, g_opt_import_parser, g_opt_file_option,g_badips,g_opt_stat_disable
+	global Options, g_opt_file_allowedips, g_opt_stop_next_day, g_bruteforce, g_bruteforce_keys, g_opt_stat_display_keys, g_opt_stat_display_temp, g_opt_file_rules, g_opt_file_badips, g_opt_file_trash, g_opt_comm_onbadip, gh_stats, gh_commands, version, parser, g_opt_import_parser,g_badips,g_opt_stat_disable
 	
 	#--
 	opts           = []
@@ -689,7 +693,7 @@ def main(argv):
 		elif opt=="-P":
 			g_opt_file_rules = arg
 		elif opt=="-m":
-			g_opt_file_option = arg
+			Options['file_option'] = arg
 		elif opt=="-o":
 			g_opt_file_badips = arg
 		elif opt=="-a":
@@ -712,9 +716,9 @@ def main(argv):
 			g_opt_stop_next_day = True
 	
 	#--
-	if g_opt_file_option=="":
-		g_opt_file_option = "{}.opts".format(opt_parser)
-	# print("DEBUG g_opt_file_option: ",g_opt_file_option)
+	if Options['file_option']=="":
+		Options['file_option'] = "{}.opts".format(opt_parser)
+	# print("DEBUG Options['file_option']: ",Options['file_option'])
 	# #exit(1)
 	# #
 	# print("")
@@ -730,7 +734,7 @@ def main(argv):
 	# # print("opt_append             :     (-A): {}".format(opt_append))
 	# print("opt_parser             :     (-p): {}".format(opt_parser))
 	# print("opt_bruteforce         :     (-b): {}".format(opt_bruteforce))
-	# print("g_opt_file_option      :     (-m): {}".format(g_opt_file_option))
+	# print("file_option            :     (-m): {}".format(Options['file_option']))
 	# print("g_opt_file_rules       :     (-P): {}".format(g_opt_file_rules))
 	# print("g_opt_file_allowedips  :     (-a): {}".format(g_opt_file_allowedips))
 	# print("g_opt_file_badips      :     (-o): {}".format(g_opt_file_badips))
@@ -744,7 +748,7 @@ def main(argv):
 	
 	#--
 	#
-	Load_option()
+	Load_option( {'file_option':Options['file_option'],} )
 	Load_allowedips()
 	Load_badips()
 	Load_rules()

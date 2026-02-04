@@ -1,42 +1,45 @@
 import os
-
+from functions import *
 #--
 #
-def Load_option():
-	global g_opt_file_option, g_option
-	#--
+def Load_option( opts:list={} ):
 	#
-	if os.path.exists( g_opt_file_option )==False:
-		return False;
+	opt_file_option = opts['file_option'] if "file_options" in opts else None
+	#
+	if opt_file_option==None or os.path.exists( opt_file_option )==False:
+		return None
 	
 	print("loading options...")
 	
 	#--
-	with open(g_opt_file_option) as f:
-		g_option = json.loads( f.read() )
-	return True
+	with open( opt_file_option ) as f:
+		return json.loads( f.read() )
+	return None
 	
 
 #--
 #
-def Load_allowedips():
-	global g_opt_file_allowedips, g_allowedips
-	#--
+def Load_allowedips( opts:list={} ):
 	#
-	if os.path.exists( g_opt_file_allowedips )==False:
-		return False;
-	#--
-	with open(g_opt_file_allowedips) as f:
+	opt_file_allowedips = opts['file_allowedips'] if "file_allowedips" in opts else None
+	#
+	ret = []
+	#
+	if os.path.exists( opt_file_allowedips )==False:
+		return None;
+	#
+	with open(opt_file_allowedips) as f:
 		for ip in f:
 			if arr_index(g_allowedips, ip.strip())==None:
-				g_allowedips.append( ip.strip() )
-	print("Loaded allowedips {}".format( len(g_allowedips )))
-	return True
+				#g_allowedips.append( ip.strip() )
+				ret.append( ip.strip() )
+	print("Loaded allowedips {}".format( len(ret) ))
+	return ret
 
 
 #--
 #
-def Load_badips():
+def Load_badips( opts:list={} ):
 	global g_opt_file_badips, g_badips
 	#--
 	#
@@ -53,7 +56,7 @@ def Load_badips():
 
 #--
 #
-def Load_rules():
+def Load_rules( opts:list={} ):
 	global g_opt_file_rules, g_rules
 	#--
 	#
@@ -72,7 +75,7 @@ def Load_rules():
 
 #--
 #
-def Load_trash():
+def Load_trash( opts:list={} ):
 	global g_opt_file_trash, g_trash
 	#--
 	#
@@ -85,3 +88,5 @@ def Load_trash():
 	print("Loaded trash {}".format( len(g_trash )))
 	print("")
 	return True
+
+#-------- END of FILE --------
