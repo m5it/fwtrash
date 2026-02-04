@@ -1,26 +1,26 @@
 #!/usr/bin/python3
-#--------------------------------------------------------------------
-#                   fwtrash.py :)
-#--------------------------------------------------------------------
-
-#--
+#-------------------------------------------------------------------
+#  fwtrash.py - Search for network trash, log it, block it, fuck it.
+#-------------------------------------------------------------------
 #
-import sys, getopt
-#import re
-import os
+#
+#--
+import atexit
+import traceback
+import sys, os, getopt
 import os.path
 import json
 import select
-#import zlib
 import base64
-#from datetime import datetime
 import time
 import signal
 import threading
 import importlib
 from functions import *
+from func_load import *
 #--
 #
+g_opt_verbose         = True              # (-V)
 g_opt_file_allowedips = "allowedips.txt"  # (-a) Define allowed ips so you wont be blocked
 g_opt_file_badips   = ""                  # (-o) Can be set file to writeout bad ips
 g_opt_file_trash    = ""                  # (-O) Can be set file to writeout trash
@@ -75,17 +75,50 @@ cnts_autosave_option  = 0
 cnt_autosave_option   = 0
 
 #--
-def signal_handler(sig, frame):
-	global die, g_opt_file_option, g_option
-	#
-	sys.stdout.flush()
-	print('logtrash=> stopping... g_opt_file_option: ',g_opt_file_option)
-	# save options and what should be memorized
-	file_write( g_opt_file_option, json.dumps(g_option), True )
-	#
-	die=True
-	#sys.exit()
-	Stats()
+def out(text:str,opts:list={}):
+	global g_opt_verbose
+	opt_prefix  = (opts['prefix'] if 'prefix' in opts else None)
+	opt_verbose = (opts['verbose'] if 'verbose' in opts else g_opt_verbose)
+	if opt_verbose==False:
+		return False
+	if opt_prefix!=None:
+		print("{} => {}".format(opt_prefix,text))
+	else:
+		print(text)
+	return True
+#
+def cleanup():
+	out("cleanup() START",{'verbose':True})
+	return True
+#
+def handle_exception(exc_type, exc_value, exc_traceback):
+    if issubclass(exc_type, KeyboardInterrupt):
+        # Let KeyboardInterrupt propagate
+        out("Exception: Keyboard Interrupt: {}".format(exc_type),{'verbose':True})
+        return
+    # Extract traceback info
+    tb = traceback.extract_tb(exc_traceback)
+    # Get the last frame (most recent error)
+    frame = tb[-1]
+    filename, line, func, text = frame
+    out(f"Exception: {exc_type.__name__}: {exc_value} (line {line} in {filename})",{'verbose':True,})
+    # Optionally print full traceback
+    traceback.print_exception(exc_type, exc_value, exc_traceback)
+
+#
+atexit.register(cleanup)
+sys.excepthook = handle_exception
+# def signal_handler(sig, frame):
+	# global die, g_opt_file_option, g_option
+	# #
+	# sys.stdout.flush()
+	# print('logtrash=> stopping... g_opt_file_option: ',g_opt_file_option)
+	# # save options and what should be memorized
+	# file_write( g_opt_file_option, json.dumps(g_option), True )
+	# #
+	# die=True
+	# #sys.exit()
+	# Stats()
 
 #--
 #
@@ -100,208 +133,6 @@ def clearline(msg,end='\r'):
     sys.stdout.write(ERASE_LINE+'\r')
     print(msg, end=end)
 
-#--
-#
-def Load_option():
-	global g_opt_file_option, g_option
-	#--
-	#
-	if os.path.exists( g_opt_file_option )==False:
-		return False;
-	
-	print("loading options...")
-	
-	#--
-	with open(g_opt_file_option) as f:
-		g_option = json.loads( f.read() )
-	return True
-	
-
-#--
-#
-def Load_allowedips():
-	global g_opt_file_allowedips, g_allowedips
-	#--
-	#
-	if os.path.exists( g_opt_file_allowedips )==False:
-		return False;
-	#--
-	with open(g_opt_file_allowedips) as f:
-		for ip in f:
-			if arr_index(g_allowedips, ip.strip())==None:
-				g_allowedips.append( ip.strip() )
-	print("Loaded allowedips {}".format( len(g_allowedips )))
-	return True
-
-
-#--
-#
-def Load_badips():
-	global g_opt_file_badips, g_badips
-	#--
-	#
-	if os.path.exists( g_opt_file_badips )==False:
-		return False;
-	#--
-	with open(g_opt_file_badips) as f:
-		for line in f:
-			badip = line.strip().split(" ")[1]
-			if arr_index(g_badips, badip)==None:
-				g_badips.append( badip )
-	print("Loaded badips {}".format( len(g_badips )))
-	return True
-
-#--
-#
-def Load_rules():
-	global g_opt_file_rules, g_rules
-	#--
-	#
-	if os.path.exists( g_opt_file_rules )==False:
-		return False;
-	#--
-	with open(g_opt_file_rules) as f:
-		for line in f:
-			if rmatch(line,"^\\#.*")==False: # skip commented line with #
-				if rmatch(line,".*\\#.*")!=False: # scrap only line if commented somewhere
-					g_rules.append( json.loads( pmatch(line,".*(?=\\#)")[0] ) )
-				else:
-					g_rules.append( json.loads( line ) )
-	print("Loaded rules {}".format( len(g_rules )))
-	return True
-
-
-#
-# def Manage_rules():
-	# global g_opt_file_rules, g_rules
-	# #--
-	# #
-	# if g_opt_file_rules=="":
-		# print("ERROR: Required to define file where rules are saved or retrived. Option (-P). For more info use (-h) as help.")
-		# sys.exit(1)
-	# #--
-	# #
-	# while True:
-		# #
-		# compare = []
-		# rule = {
-			# "key" :"",  # key that is checked for trashes
-			# "type":"1", # type of checking. 1=base64 regex, 2=user regex, 3=plain
-			# "data":"",
-		# }
-		# #
-		# print("1.) Show rules.")
-		# print("2.) Add rule.")
-		# print("3.) Edit rule.")
-		# print("4.) Delete rule.")
-		# print("5.) Exit")
-		# #
-		# cmd = input("Choose option: ")
-		# #
-		# if cmd=="1":
-			# i=0
-			# for rule in g_rules:
-				# print("{}.) {}".format(i,rule))
-				# i+=1
-		# #
-		# elif cmd=="2" or cmd=="3":
-			# while True:
-				# #
-				# if cmd=="3":
-					# i = input("rule number: ")
-					# if len(g_rules)>int(i):
-						# rule = g_rules[int(i)]
-					# else:
-						# print("rule {} dont exists.".format(i))
-						# continue
-				# # key
-				# tmp = input("Enter key to compare{}: ".format( (" ( {} )".format(rule["key"]) if cmd=="3" else "") ))
-				# if cmd=="2" and tmp=="":
-					# continue
-				# elif cmd=="3" and tmp=="":
-					# nothing()
-				# else:
-					# rule["key"] = tmp
-				
-				# # type
-				# print("#--")
-				# print("# Types of checking.")
-				# print("# 1=base64 regex, 2=user regex, 3=plain comparing")
-				# print("# (4-8) length comparing")
-				# print("# 4= >     , 5= >=             , 6= <     , 7= <=             , 8==")
-				# print("# 4=greater, 5=greater or equal, 6=smaller, 7=smaller or equal, 8=equal")
-				# tmp = input("Enter type of comparing{}: ".format( (" ( {} )".format(rule["type"]) if cmd=="3" else " ( {} )".format(rule["type"])) ))
-				# if tmp!="":
-					# rule["type"] = tmp
-				
-				# # data
-				# tmp = input("Enter data to compare{}: ".format( (" ( {} )".format(rule["data"]) if cmd=="3" else "") ))
-				# if tmp=="":
-					# nothing()
-				# else:
-					# rule["data"] = tmp
-				
-				# # prompt for additional key:value
-				# while True:
-					# tmp = input("Enter additional key:value or empty to finish: ")
-					# if tmp=="" or rmatch(tmp,".*\:.*")==False:
-						# break
-					# a=tmp.split(":")
-					# rule[a[0]] = a[1]
-				# #
-				# compare.append( rule )
-				
-				# #
-				# tmp = input("Do you wish add another rule to compare with?(yes/no): ")
-				# if tmp=="no":
-					# break
-			
-			# # write to rules
-			# if cmd=="2": # add rule
-				# file_write( g_opt_file_rules, "{}\n".format(json.dumps(compare)), False )
-				# g_rules.append( compare )
-			# else:        # edit/overwrite rule
-				# file_overline( g_opt_file_rules, compare, int(i) )
-				# g_rules[int(i)] = compare
-		# #
-		# elif cmd=="4": # delete
-			# i = input("rule number: ")
-			# if len(g_rules)>int(i):
-				# n_rules = []
-				# x=0
-				# for rule in g_rules:
-					# if x!=int(i):
-						# n_rules.append( rule )
-					# x+=1
-				# #
-				# x=0
-				# for rule in n_rules:
-					# file_write( g_opt_file_rules, "{}\n".format(json.dumps(rule)), True if x==0 else False )
-					# x+=1
-				# #
-				# g_rules = n_rules
-			# else:
-				# print("rule {} dont exists.".format(i))
-				# continue
-		# elif cmd=="5" or cmd.lower()=="quit" or cmd.lower()=="exit":
-			# break
-
-
-#--
-#
-def Load_trash():
-	global g_opt_file_trash, g_trash
-	#--
-	#
-	if os.path.exists( g_opt_file_trash )==False:
-		return False;
-	#--
-	with open(g_opt_file_trash) as f:
-		for dump in f:
-			g_trash.append( json.loads(dump) )
-	print("Loaded trash {}".format( len(g_trash )))
-	print("")
-	return True
 
 #--
 # Function Find_trash() will return index of object if crc32b exists
@@ -343,6 +174,7 @@ def Check_trash( xobj ):
 	acompare = [None]*len(g_rules)
 	#
 	for rules in g_rules:
+		print("Check_trash() D1 rules: ",rules)
 		cntret = 0 # if cntret same with len of rules then comparison succided
 		#
 		for rule in rules:
@@ -406,6 +238,7 @@ def Check_trash( xobj ):
 			#   Ex.: -b "key:0,climit:5,tlimit:10;key:1,climit:3,tlimit:3"
 			#
 			if "bruteforce_count_key" in rule:
+				print("Setting key which is used to check brutefoce: ",rule["bruteforce_count_key"])
 				xobj["bruteforce_count_key"] = rule["bruteforce_count_key"]
 			#
 			if ret==True:
@@ -492,8 +325,6 @@ def Parse( line ):
 			bruteforce_enabled = True
 			#
 			c = g_bruteforce[int(xobj["bruteforce_count_key"])]
-			print("DEBUG bruteforce_count_key c",c)
-			#print("DEBUG g_bruteforce: ",g_bruteforce)
 			#
 			c["count"] += 1
 			c["timelast"] = int( time.time() )
@@ -518,11 +349,26 @@ def Parse( line ):
 			#
 			if bruteforced:
 				c["reached"]+=1
+				# (3.2.2026) Ex.: c["ips"] = {"crc32b":{"ip":"192.168.1.1","blocked":0,}}
+				tmpcrc = crc32b( bytearray(xobj['ip'].encode('UTF-8')) )
+				if tmpcrc not in c['ips']:
+					c['ips'][tmpcrc] = {"ip":xobj['ip'],"blocked":1,"ts_first":time.time(),}
+				else:
+					c['ips'][tmpcrc]['blocked']+=1
+				# {'count': 0, 'timefirst': 0, 'timelast': 0, 'reached': 1642, 'ips': {'773f7bbe': {'ip': '51.195.244.175', 'blocked': 1, 'ts_first': 1770137384.5395854},
+				print("Blocking tmpcrc",tmpcrc)
+				print("DEBUG bruteforce_count_key: ",xobj["bruteforce_count_key"])
+				print("count: {}".format( c['count'] ))
+				print("tf: {}".format( c['timefirst'] ))
+				print("tl: {}".format( c['timelast'] ))
+				print("reached: {}".format( c['reached'] ))
+				print("ips: {}".format( len(c['ips']) ))
+			# global bruteforce data
 			g_bruteforce[int(xobj["bruteforce_count_key"])] = c
 		
 		#--
 		# check if bad ip exists
-		# xobj["ip"] can be empty when running logtrash on auth.log to observe ssh service
+		# xobj["ip"] can be empty when running fwtrash on auth.log to observe ssh service
 		if (xobj["ip"] != "" and arr_index(g_badips,xobj["ip"]) == None and bruteforce_enabled==False) or (xobj["ip"] != "" and arr_index(g_badips,xobj["ip"]) == None and bruteforce_enabled==True and bruteforced):
 			print("BLOCKING {}, xobj: {}".format(xobj['ip'], xobj))
 			#
@@ -540,6 +386,8 @@ def Parse( line ):
 			if g_opt_comm_onbadip!="":
 				cmd = g_opt_comm_onbadip.replace("[--IP]",xobj["ip"])
 				os.system(cmd)
+		else:
+			print("Bad IP is blocked {}".format(xobj))
 		
 		#--
 		# check if trash already exists in g_trash
@@ -564,6 +412,7 @@ def Parse( line ):
 			#
 			xobj["blocked"]     = blocked
 			xobj["bruteforced"] = bruteforced
+			xobj["repeat"]      = 1
 			#
 			g_trash.append( xobj )
 			#
@@ -901,8 +750,6 @@ def main(argv):
 	Load_rules()
 	Load_trash()
 	#--
-	signal.signal(signal.SIGINT, signal_handler)
-	#--
 	# DEBUG ONLY
 	#print("DEBUG g_badips: \n")
 	#arr_dump( g_badips )
@@ -926,7 +773,8 @@ def main(argv):
 				"count"    :0,       #
 				"timefirst":0,       #
 				"timelast" :0,       #
-				"reached"  :0,       # Number of times count was reached
+				"reached"  :0,       # Number of times count was reached / blocked
+				"ips"      :{},      # Object of reached ips. (debug)
 				"climit"   :None,    # (set from command prompt arg (-b)) count limit
 				"tlimit"   :None,    # (set from command prompt arg (-b)) time limit
 			}
