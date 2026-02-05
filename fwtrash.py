@@ -7,14 +7,14 @@
 #--
 import atexit
 import traceback
+import threading
 import sys, os, getopt
-import os.path
 import json
 import select
 import base64
 import time
-import signal
-import threading
+import os.path
+#import signal
 import importlib
 from functions import *
 from func_load import *
