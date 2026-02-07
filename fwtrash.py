@@ -683,7 +683,7 @@ def StatsDisplay():
 		# load/check for badips if there are any new. bad ips can be retrived with other module and like that they are synchronized.
 		# (idea: maybe this we should connect programs trough server like ircbot..)
 		if ( int(time.time()) - last_load_check ) >= 360:
-			Load_badips()
+			g_badips = Load_badips(g_badips)
 			last_load_check = int(time.time())
 		
 		#
