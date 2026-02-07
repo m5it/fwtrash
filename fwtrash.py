@@ -418,6 +418,7 @@ def Parse( line ):
 			#
 			if g_opt_comm_onbadip!="":
 				cmd = g_opt_comm_onbadip.replace("[--IP]",xobj["ip"])
+				print("Parse() DEBUG Running CMD: {}".format( cmd ))
 				os.system(cmd)
 		else:
 			print("Bad IP is blocked {}".format(xobj))
@@ -866,5 +867,4 @@ def main(argv):
 
 #--
 if __name__ == '__main__':
-	#--
 	main(sys.argv[1:])

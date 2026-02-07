@@ -67,7 +67,6 @@ def file_write( filename, data, overwrite=False ):
 		f.close()
 	except Exception as E:
 		print("ERROR: file_write() on file: {}, len: {}, E: {}".format( filename, len(data), E ))
-
 #
 def file_overline( filename, xobj, at, isString=False ):
 	#--
