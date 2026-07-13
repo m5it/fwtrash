@@ -973,3 +973,37 @@ Usage:
 [05:17:23] INFO: AI response: 100004 prompt + 36 response tokens (total: 5211695 / 84729)
 [05:17:23] [after +36] [Context: 102487/131072 (78.2%)]
 [05:17:23] You: 
+[05:23:58] [Context: 102518/131072 (78.2%)]
+[05:23:58] [iter 1] [Context: 102518/131072 (78.2%)]
+[05:23:58] INFO: AI request (iteration 1, msgs=268)
+[05:24:11] INFO: AI response: 100063 prompt + 453 response tokens (total: 5311758 / 85182)
+[05:24:11] [after +453] [Context: 102915/131072 (78.5%)]
+[05:24:11] You: 
+[05:24:51] [Context: 102929/131072 (78.5%)]
+[05:24:51] [iter 1] [Context: 102929/131072 (78.5%)]
+[05:24:51] INFO: AI request (iteration 1, msgs=270)
+[05:24:55] INFO: AI response: 100439 prompt + 70 response tokens (total: 5412197 / 85252)
+[05:24:55] [after +70] [Context: 103497/131072 (79.0%)]
+[05:24:55] [iter 2] [Context: 103497/131072 (79.0%)]
+[05:24:55] INFO: AI request (iteration 2, msgs=272)
+[05:24:58] INFO: AI response: 100982 prompt + 55 response tokens (total: 5513179 / 85307)
+[05:24:58] [after +55] [Context: 103688/131072 (79.1%)]
+[05:24:58] [iter 3] [Context: 103688/131072 (79.1%)]
+[05:24:58] INFO: AI request (iteration 3, msgs=274)
+[05:25:04] INFO: AI response: 101202 prompt + 326 response tokens (total: 5614381 / 85633)
+[05:25:04] [after +326] [Context: 104038/131072 (79.4%)]
+[05:25:04] [iter 4] [Context: 104038/131072 (79.4%)]
+[05:25:04] INFO: AI request (iteration 4, msgs=276)
+[05:25:10] INFO: AI response: 101578 prompt + 217 response tokens (total: 5715959 / 85850)
+[05:25:10] [after +217] [Context: 104271/131072 (79.6%)]
+[05:25:10] You: 
+[05:25:35] [Context: 104306/131072 (79.6%)]
+[05:25:35] [iter 1] [Context: 104306/131072 (79.6%)]
+[05:25:35] INFO: AI request (iteration 1, msgs=278)
+[05:25:50] INFO: AI response: 101723 prompt + 1338 response tokens (total: 5817682 / 87188)
+[05:25:50] [after +1338] [Context: 105614/131072 (80.6%)]
+[05:25:56] [iter 2] [Context: 8950/131072 (6.8%)]
+[05:25:56] INFO: AI request (iteration 2, msgs=24)
+[05:25:58] INFO: AI response: 8923 prompt + 177 response tokens (total: 5826605 / 87365)
+[05:25:58] [after +177] [Context: 9136/131072 (7.0%)]
+[05:25:58] You: 

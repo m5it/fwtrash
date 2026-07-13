@@ -29,10 +29,10 @@ Modern security log analyzer with real-time threat detection and automatic IP bl
 │  ├─ Rule Engine (typed conditions)                          │
 │  └─ Block Manager (pluggable backends)                     │
 ├─────────────────────────────────────────────────────────────┤
-│  State (Pydantic models)                                      │
+│  State (Pydantic models)                                    │
 │  ├─ PipelineState (replaces global vars)                    │
-│  ├─ BlockDecision (with expiration)                        │
-│  └─ PipelineStats (metrics)                                │
+│  ├─ BlockDecision (with expiration)                         │
+│  └─ PipelineStats (metrics)                               │
 ├─────────────────────────────────────────────────────────────┤
 │  Backends: Iptables │ File (audit) │ Null (testing)        │
 └─────────────────────────────────────────────────────────────┘
@@ -40,9 +40,30 @@ Modern security log analyzer with real-time threat detection and automatic IP bl
 
 ## Quick Start
 
+### Without pip install (run from source)
+
 ```bash
-# Install
-pip install fwtrash
+cd v2
+pip install -e ".[dev]"        # Development install
+fwtrash --help                 # Now available as command
+
+# Or run directly without install
+cd v2
+python -m fwtrash.cli.main --help
+
+# Or create a launcher script
+python -c "
+import sys
+sys.path.insert(0, 'src')
+from fwtrash.cli.main import app
+app()
+" -- run -P ../rules/http.rules
+```
+
+### With pip install (when published)
+
+```bash
+pip install fwtrash[dashboard]
 
 # Basic HTTP log monitoring
 tail -f /var/log/nginx/access.log | fwtrash run -P rules/http.rules
@@ -60,17 +81,18 @@ tail -f /var/log/nginx/access.log | fwtrash run \
 
 ## Installation
 
+### From Source (Development)
+
 ```bash
-# From PyPI
-pip install fwtrash
-
-# With dashboard support
-pip install fwtrash[dashboard]
-
-# Development install
 git clone https://github.com/grandekos/fwtrash.git
-cd fwtrash
+cd fwtrash/v2
 pip install -e ".[dev]"
+```
+
+### With Dashboard Support
+
+```bash
+pip install -e ".[dashboard]"
 ```
 
 ## Configuration
@@ -129,20 +151,7 @@ class MyParser(LogParser):
         return 1.0 if line.startswith("MYFORMAT") else 0.0
 ```
 
-### Custom Backend
-
-```python
-from fwtrash.core.blocking import BlockingBackend
-
-class MyBackend(BlockingBackend):
-    async def block(self, decision: BlockDecision) -> bool:
-        # Implement blocking
-        return True
-    
-    async def unblock(self, ip: str) -> bool:
-        # Implement unblocking
-        return True
-```
+See [docs/plugin-development.md](docs/plugin-development.md) for full guide.
 
 ## Commands
 
@@ -159,6 +168,15 @@ class MyBackend(BlockingBackend):
 ```bash
 docker-compose up -d
 # Access dashboard at http://localhost:8080
+```
+
+## Testing
+
+```bash
+cd v2
+make test          # Run all tests
+make lint          # Run linters
+make build         # Build package
 ```
 
 ## Migration from v0.6
