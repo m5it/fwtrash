@@ -1,3 +1,4 @@
+testlogs/*
 test/*
 access.log
 out.cap

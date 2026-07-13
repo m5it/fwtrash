@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  fwtrash:
+    build: .
+    container_name: fwtrash
+    volumes:
+      - ./testlogs:/data/logs:ro
+      - ./rules:/data/rules:ro
+      - fwtrash-state:/data/state
+    environment:
+      - FWTRASH_LOG_LEVEL=info
+    command: >
+      fwtrash run
+      -P /data/rules/http.rules
+      -o /data/state/badips.txt
+      -O /data/state/trash.txt
+      --dashboard
+      --dashboard-port 8080
+    ports:
+      - "8080:8080"
+    networks:
+      - fwtrash-net
+
+  # Optional: nginx for generating test logs
+  nginx:
+    image: nginx:alpine
+    container_name: fwtrash-nginx
+    volumes:
+      - ./testlogs:/var/log/nginx
+    ports:
+      - "8081:80"
+    networks:
+      - fwtrash-net
+    profiles:
+      - test
+
+volumes:
+  fwtrash-state:
+
+networks:
+  fwtrash-net:
+    driver: bridge

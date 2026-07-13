@@ -5,11 +5,11 @@
 # logtrash_ssh module 4  ssh and maybe other services from auth.log
 #--------------------------------------------------------------------
 # function XObj(...) is used to split line into useful values
-#--------------------------------------------------------------------
-from fwtrash import crc32b
-from fwtrash import strTs2Sec
-from fwtrash import arr_dump
-from fwtrash import rmatch
+from functions import crc32b
+from functions import strTs2Sec
+from functions import arr_dump
+from functions import rmatch
+from functions import pmatch
 from fwtrash import pmatch
 import json
 

@@ -1,0 +1,99 @@
+{
+  "id": "1783916439.8946526",
+  "title": "FWTrash v1.0 Major Update - HTTP Module Modernization",
+  "instructions": "Modernize FWTrash from v0.6 to v1.0 with focus on http module first. Create comprehensive test suite using existing testlogs, refactor rule engine for clarity, add configuration management, and improve performance. Maintain backward compatibility where possible while introducing modern Python practices.",
+  "startTimestamp": 1783916439.8946562,
+  "endTimestamp": null,
+  "tasks": {
+    "1783916454.5724373": {
+      "id": "1783916454.5724373",
+      "status": "in_progress",
+      "instruction": "Analyze current modules/http.py and testlogs/access.log + error.log to understand:\n- All log format variations (normal, error, crit)\n- Current parsing limitations and edge cases\n- XObj function complexity and return structure\n- Date format conversions and timezone handling\n\nCreate a design document (docs/DESIGN_HTTP_v1.0.md) outlining:\n- Proposed new XObj structure with type hints\n- Improved error log parsing strategy\n- Unified date handling approach\n- Backward compatibility considerations",
+      "startTimestamp": 1783916464.0763218,
+      "endTimestamp": null,
+      "log": [
+        {
+          "timestamp": 1783916464.0765095,
+          "text": "Build started"
+        },
+        {
+          "timestamp": 1783916470.2172954,
+          "text": "Starting Task 1: Analyzing modules/http.py and testlogs to understand log format variations, parsing limitations, and XObj structure"
+        }
+      ]
+    },
+    "1783916454.5726087": {
+      "id": "1783916454.5726087",
+      "status": "in_progress",
+      "instruction": "Set up pytest-based testing infrastructure:\n- Create tests/ directory structure\n- Extract representative samples from testlogs/access.log and error.log (50-100 lines each covering normal, error, crit patterns)\n- Create tests/fixtures/ with sample log files\n- Implement test fixtures for XObj parsing validation\n- Add tests for edge cases: missing IPs, malformed dates, multi-line errors",
+      "startTimestamp": 1783916521.4020884,
+      "endTimestamp": null,
+      "log": [
+        {
+          "timestamp": 1783916521.4022648,
+          "text": "Build started"
+        },
+        {
+          "timestamp": 1783916527.4664319,
+          "text": "Starting Task 2: Setting up pytest testing infrastructure with directory structure, sample data extraction, and test fixtures"
+        }
+      ]
+    },
+    "1783916454.5738127": {
+      "id": "1783916454.5738127",
+      "status": "pending",
+      "instruction": "Rewrite modules/http.py with modern Python practices:\n- Add type hints throughout\n- Implement dataclass for XObj instead of dict\n- Create separate parser classes: NormalLogParser, ErrorLogParser, CritLogParser\n- Unified parsing pipeline with clear flow\n- Improve regex patterns with compiled patterns\n- Better error handling with try/except blocks\n- Maintain backward compatibility with existing rule keys (ip, date, req, code, len, ref, ua, type, host, upstream, server, data)\n- Add comprehensive docstrings",
+      "startTimestamp": null,
+      "endTimestamp": null,
+      "log": []
+    },
+    "1783916454.5740352": {
+      "id": "1783916454.5740352",
+      "status": "pending",
+      "instruction": "Update rule matching system in fwtrash.py and rules/http.rules:\n- Replace numeric type codes (1-8) with descriptive enums: BASE64_REGEX, REGEX, PLAIN, GT_LEN, GTE_LEN, LT_LEN, LTE_LEN, EQ_LEN\n- Create Rule class with validation\n- Implement rule compilation for performance (pre-compile regex)\n- Add rule validation on load (check required fields, valid regex)\n- Update http.rules to use new type system while maintaining backward compatibility\n- Add support for rule versioning",
+      "startTimestamp": null,
+      "endTimestamp": null,
+      "log": []
+    },
+    "1783916454.574227": {
+      "id": "1783916454.574227",
+      "status": "pending",
+      "instruction": "Add YAML/JSON configuration file support:\n- Create config/ directory with example configs\n- Implement Config class with validation using pydantic or dataclasses\n- Support for: rules file, output files, bruteforce settings, display templates, allowed/bad IPs\n- Config file overrides command-line options (backward compatible)\n- Auto-reload config on change\n- Update fwtrash.py to load config first, then CLI args\n- Create config/http_config.yaml.example with documentation",
+      "startTimestamp": null,
+      "endTimestamp": null,
+      "log": []
+    },
+    "1783916454.574385": {
+      "id": "1783916454.574385",
+      "status": "pending",
+      "instruction": "Improve memory and CPU efficiency:\n- Replace in-memory g_trash/g_pure lists with SQLite for large datasets\n- Implement LRU cache for XObj hash lookups\n- Use generators for log processing instead of loading all into memory\n- Optimize regex compilation (compile once, reuse)\n- Add memory usage monitoring and limits\n- Profile with testlogs to measure improvements\n- Ensure bruteforce tracking remains efficient",
+      "startTimestamp": null,
+      "endTimestamp": null,
+      "log": []
+    },
+    "1783916454.5744972": {
+      "id": "1783916454.5744972",
+      "status": "pending",
+      "instruction": "Complete test coverage for http module:\n- Unit tests for all XObj scenarios (normal, error, crit logs)\n- Integration tests with real log samples from testlogs/\n- Performance benchmarks comparing v0.6 vs v1.0\n- Rule matching tests with all type variations\n- Bruteforce detection tests\n- Create test runner script that validates against testlogs\n- Generate coverage report (aim for >80% coverage)",
+      "startTimestamp": null,
+      "endTimestamp": null,
+      "log": []
+    },
+    "1783916454.5746186": {
+      "id": "1783916454.5746186",
+      "status": "pending",
+      "instruction": "Update all documentation:\n- Rewrite README.md with v1.0 features and quickstart\n- Create docs/MIGRATION_v0.6_to_v1.0.md for existing users\n- Update module docstrings\n- Add architecture diagram (docs/architecture.md)\n- Document new configuration system\n- Create troubleshooting guide\n- Update usage examples with new features",
+      "startTimestamp": null,
+      "endTimestamp": null,
+      "log": []
+    },
+    "1783916454.5747347": {
+      "id": "1783916454.5747347",
+      "status": "pending",
+      "instruction": "Full system validation:\n- Run fwtrash.py v1.0 against complete testlogs/access.log\n- Compare output with v0.6 (should produce similar results)\n- Test with run_http.sh and runwhile_http.sh scripts\n- Validate rule matching produces expected badips\n- Test configuration file loading and hot-reload\n- Verify backward compatibility with existing command-line usage\n- Create validation report",
+      "startTimestamp": null,
+      "endTimestamp": null,
+      "log": []
+    }
+  }
+}

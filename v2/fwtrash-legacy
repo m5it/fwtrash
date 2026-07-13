@@ -1,0 +1,25 @@
+#!/usr/bin/env python3
+"""Legacy wrapper for FWTrash v2.0.
+
+This script provides backward compatibility with v0.6 command-line usage
+while internally using the new v2.0 codebase.
+"""
+
+import sys
+import warnings
+
+def main():
+    """Run with deprecation warning."""
+    warnings.warn(
+        "This is the legacy FWTrash wrapper. Please use 'fwtrash' command directly. "
+        "The legacy interface is deprecated and will be removed in v2.1.",
+        DeprecationWarning,
+        stacklevel=2
+    )
+    
+    # Import and run new CLI
+    from fwtrash.cli.main import app
+    app()
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,86 @@
+{
+  "id": "1783917261.9269545",
+  "title": "FWTrash v1.0 Refactor \u2014 Core Architecture & HTTP Modernization",
+  "instructions": "Modernize FWTrash from a monolithic, global-state script into a maintainable v1.0 architecture. Start with the HTTP module and core rule engine: add a proper test harness using existing testlogs, refactor the parser for clarity and robustness, replace stringly-typed rule comparisons with a typed rule engine, and fix circular import issues in modules. Preserve CLI backward compatibility while making the code testable and extensible.",
+  "startTimestamp": 1783917261.926958,
+  "endTimestamp": null,
+  "tasks": {
+    "1783917261.9271607": {
+      "id": "1783917261.9271607",
+      "status": "in_progress",
+      "instruction": "Read modules/ssh.py, modules/tcpdump.py, modules/vsftp.py and identify all imports from fwtrash (crc32b, strTs2Sec, etc.). Replace them with imports from functions.py to eliminate circular dependencies. Verify that `importlib.import_module(opt_parser)` works for all modules without crashing. Do NOT refactor logic yet\u2014only fix imports and ensure fwtrash.py can load each parser.",
+      "startTimestamp": 1783917261.9327657,
+      "endTimestamp": null,
+      "log": [
+        {
+          "timestamp": 1783917261.9328313,
+          "text": "Build started"
+        }
+      ]
+    },
+    "1783917261.928123": {
+      "id": "1783917261.928123",
+      "status": "pending",
+      "instruction": "Create a `tests/` directory with a pytest-compatible test harness. Write a small script (or use Python) to extract representative lines from `testlogs/access.log*` (both normal and error lines) and save them as `tests/fixtures/http_normal.log`, `tests/fixtures/http_error.log`, and `tests/fixtures/http_crit.log`, each containing at most 50 lines. Add a `tests/__init__.py` and `tests/conftest.py` if needed. Verify the fixtures parse without errors by importing modules.http and calling XObj on each line.",
+      "startTimestamp": null,
+      "endTimestamp": null,
+      "log": []
+    },
+    "1783917261.931974": {
+      "id": "1783917261.931974",
+      "status": "pending",
+      "instruction": "Review functions.py and split it cleanly: keep `crc32b`, `strTs2Sec`, `rmatch`, `pmatch`, `arr_index`, `file_write`, `file_exists` in functions.py; move any HTTP/SSH-specific helpers into their respective modules. Ensure all existing callers still import correctly. Add type hints to the public utility functions and replace bare `except:` with specific exceptions where safe.",
+      "startTimestamp": null,
+      "endTimestamp": null,
+      "log": []
+    },
+    "1783917261.932083": {
+      "id": "1783917261.932083",
+      "status": "pending",
+      "instruction": "Refactor modules/http.py so XObj uses a single compiled regex for normal access.log lines instead of fragile string splits. Keep support for nginx error and crit lines via the existing extract_log_fields helper, but make the three code paths (NORMAL, ERROR, CRIT) explicit and separately unit-testable. Return None for unparseable lines. Add type hints and docstrings. Ensure the refactored parser produces identical output on the fixtures from T2.",
+      "startTimestamp": null,
+      "endTimestamp": null,
+      "log": []
+    },
+    "1783917261.9321904": {
+      "id": "1783917261.9321904",
+      "status": "pending",
+      "instruction": "Introduce a new `core/rules.py` module that defines a Rule dataclass (key, match_type, data, bruteforce_key) and a MatchType enum replacing the magic strings \"1\"\u2013\"8\". Implement a `RuleEngine` class with a `match(xobj)` method that returns (matched: bool, bruteforce_key: Optional[int]). Port rules/http.rules to the new format and add a loader that can still read the legacy JSON format for backward compatibility. Write unit tests covering each match type and combined rule arrays.",
+      "startTimestamp": null,
+      "endTimestamp": null,
+      "log": []
+    },
+    "1783917261.9322987": {
+      "id": "1783917261.9322987",
+      "status": "pending",
+      "instruction": "Create a new `core/pipeline.py` module containing a `Pipeline` class that encapsulates the current global arrays (g_badips, g_allowedips, g_trash, g_pure, g_bruteforce) and counters from fwtrash.py. Move Parse() logic into `Pipeline.process_line(line)`. Keep CLI option handling in fwtrash.py, but have main() instantiate Pipeline and call it per stdin line. Ensure the class is unit-testable by allowing injection of parser and rule engine.",
+      "startTimestamp": null,
+      "endTimestamp": null,
+      "log": []
+    },
+    "1783917261.932415": {
+      "id": "1783917261.932415",
+      "status": "pending",
+      "instruction": "Write integration tests in `tests/test_pipeline.py` that feed the HTTP fixtures through the Pipeline with rules/http.rules and assert: (a) expected bad IPs are detected, (b) allowed IPs are skipped, (c) trash output is written, (d) bruteforce option (-b equivalent) triggers after configured counts. Use temporary files for outputs. Run the tests and fix any failures.",
+      "startTimestamp": null,
+      "endTimestamp": null,
+      "log": []
+    },
+    "1783917261.9325304": {
+      "id": "1783917261.9325304",
+      "status": "pending",
+      "instruction": "Update fwtrash.py to use the new Pipeline class while preserving all existing CLI flags (-P, -o, -O, -a, -c, -p, -s, -S, -b, -m, -D, -d, -h, -v). Add a backward-compat alias so legacy `modules.http` import still works. Create a smoke test that runs: `cat tests/fixtures/http_normal.log | python fwtrash.py -P rules/http.rules -p modules.http -o /tmp/badips_test.out -O /tmp/trash_test.out -d` and verifies exit code 0 and non-empty output files. Document any CLI changes in HISTORY.md.",
+      "startTimestamp": null,
+      "endTimestamp": null,
+      "log": []
+    },
+    "1783917261.9326444": {
+      "id": "1783917261.9326444",
+      "status": "pending",
+      "instruction": "Update README.md to reflect the new `core/` architecture, test commands (`python -m pytest tests/`), and module import conventions. Add a MIGRATION.md file explaining the legacy-to-v1.0 changes for rule authors and module authors. Keep the existing usage examples but note which are deprecated. Ensure HISTORY.md has a v1.0 entry summarizing the refactor.",
+      "startTimestamp": null,
+      "endTimestamp": null,
+      "log": []
+    }
+  }
+}

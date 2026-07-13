@@ -1,0 +1,1 @@
+"""FWTrash test suite."""
