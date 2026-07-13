@@ -1,5 +1,10 @@
 # Last update: 2026-07-13 Version v2:
-Migrate to <h1><a href="v2">v2.0.0</a></h1>
+<h1><a href="v2">v2.0.0</a></h1>
+
+
+
+
+
 
 # --------------------------------------------------------------------
 #                   FWTrash by grandekos.com
