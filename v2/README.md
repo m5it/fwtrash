@@ -183,6 +183,8 @@ make build         # Build package
 
 See [MIGRATION.md](MIGRATION.md) for detailed upgrade guide.
 
+##
+**Author:** t3ch (w4d4f4k at gmail dot com)
 ## License
 
 MIT - See [LICENSE](LICENSE)
