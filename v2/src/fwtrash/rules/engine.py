@@ -15,7 +15,7 @@ from dataclasses import dataclass, field
 from functools import lru_cache
 from typing import Any, ClassVar, TypeVar
 
-from fwtrash.core.models import ConditionType, LogEntry, Rule, RuleCondition
+from fwtrash.core.models import ConditionType, LogEntry, Rule, RuleCondition, RuleMetadata
 
 T = TypeVar("T", bound="Condition")
 

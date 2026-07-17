@@ -40,6 +40,126 @@ class FileOutputHandler:
     
     def _open_trash(self) -> None:
         """Open trash file (sync)."""
-n        if self.trash_file:\n            self.trash_file.parent.mkdir(parents=True, exist_ok=True)\n            self._trash_fp = open(self.trash_file, "a")\n    \n    async def _get_badips_fp(self) -> TextIO | None:\n        \"\"\"Get or open badips file.\"\"\"\n        if self._badips_fp is None and self.badips_file:\n            await asyncio.get_event_loop().run_in_executor(\n                None, self._open_badips\n            )\n        return self._badips_fp\n    \n    def _open_badips(self) -> None:\n        \"\"\"Open badips file (sync).\"\"\"\n        if self.badips_file:\n            self.badips_file.parent.mkdir(parents=True, exist_ok=True)\n            self._badips_fp = open(self.badips_file, "a")\n    \n    def _format_entry(self, entry: LogEntry, rule: Rule | None = None) -> str:\n        \"\"\"Format entry using template.\"\"\"\n        # Simple template replacement\n        result = self.template\n        result = result.replace("[--DATE]", entry.timestamp.isoformat())\n        result = result.replace("[--IP]", entry.ip)\n        result = result.replace("[--REQ]", entry.parsed_fields.get('req', '-'))\n        result = result.replace("[--UA]", entry.parsed_fields.get('ua', '-'))\n        result = result.replace("[--REF]", entry.parsed_fields.get('ref', '-'))\n        result = result.replace("[--CODE]", str(entry.status_code or '-'))\n        result = result.replace("[--LEN]", str(entry.response_size or '-'))\n        \n        if rule:\n            result = result.replace("[--RULE]", rule.metadata.name)\n        \n        return result + "\n"
+        if self.trash_file:
+            self.trash_file.parent.mkdir(parents=True, exist_ok=True)
+            self._trash_fp = open(self.trash_file, "a")
     
-    async def write_trash(self, entry: LogEntry, rule: Rule | None = None) -> None:\n        \"\"\"Write trash entry.\"\"\"\n        fp = await self._get_trash_fp()\n        if not fp:\n            return\n        \n        line = self._format_entry(entry, rule)\n        async with self._lock:\n            await asyncio.get_event_loop().run_in_executor(\n                None, fp.write, line\n            )\n    \n    async def write_block(self, decision: BlockDecision) -> None:\n        \"\"\"Write block decision.\"\"\"\n        fp = await self._get_badips_fp()\n        if not fp:\n            return\n        \n        line = f"{decision.ip} # {decision.reason}\\n"\n        async with self._lock:\n            await asyncio.get_event_loop().run_in_executor(\n                None, fp.write, line\n            )\n    \n    async def close(self) -> None:\n        \"\"\"Close files.\"\"\"\n        if self._trash_fp:\n            await asyncio.get_event_loop().run_in_executor(\n                None, self._trash_fp.close\n            )\n            self._trash_fp = None\n        if self._badips_fp:\n            await asyncio.get_event_loop().run_in_executor(\n                None, self._badips_fp.close\n            )\n            self._badips_fp = None\n\n\nclass JSONOutputHandler:\n    \"\"\"Write structured JSON output.\"\"\"\n    \n    def __init__(self, output_file: str) -> None:\n        self.output_file = Path(output_file)\n        self._fp: TextIO | None = None\n        self._lock = asyncio.Lock()\n    \n    async def _get_fp(self) -> TextIO:\n        if self._fp is None:\n            await asyncio.get_event_loop().run_in_executor(None, self._open)\n        return self._fp\n    \n    def _open(self) -> None:\n        self.output_file.parent.mkdir(parents=True, exist_ok=True)\n        self._fp = open(self.output_file, "a")\n    \n    async def write_trash(self, entry: LogEntry, rule: Rule | None = None) -> None:\n        fp = await self._get_fp()\n        data = {\n            "type": "trash",\n            "timestamp": entry.timestamp.isoformat(),\n            "ip": entry.ip,\n            "request": entry.parsed_fields.get('req'),\n            "user_agent": entry.user_agent,\n            "rule": rule.metadata.name if rule else None\n        }\n        async with self._lock:\n            await asyncio.get_event_loop().run_in_executor(\n                None, self._fp.write, json.dumps(data) + "\\n"\n            )\n    \n    async def write_block(self, decision: BlockDecision) -> None:\n        fp = await self._get_fp()\n        data = {\n            "type": "block",\n            "ip": decision.ip,\n            "reason": decision.reason,\n            "confidence": decision.confidence,\n            "detected_at": decision.detected_at.isoformat()\n        }\n        async with self._lock:\n            await asyncio.get_event_loop().run_in_executor(\n                None, self._fp.write, json.dumps(data) + "\\n"\n            )\n    \n    async def close(self) -> None:\n        if self._fp:\n            await asyncio.get_event_loop().run_in_executor(None, self._fp.close)\n            self._fp = None
+    async def _get_badips_fp(self) -> TextIO | None:
+        """Get or open badips file."""
+        if self._badips_fp is None and self.badips_file:
+            await asyncio.get_event_loop().run_in_executor(
+                None, self._open_badips
+            )
+        return self._badips_fp
+    
+    def _open_badips(self) -> None:
+        """Open badips file (sync)."""
+        if self.badips_file:
+            self.badips_file.parent.mkdir(parents=True, exist_ok=True)
+            self._badips_fp = open(self.badips_file, "a")
+    
+    def _format_entry(self, entry: LogEntry, rule: Rule | None = None) -> str:
+        """Format entry using template."""
+        # Simple template replacement
+        result = self.template
+        result = result.replace("[--DATE]", entry.timestamp.isoformat())
+        result = result.replace("[--IP]", entry.ip)
+        result = result.replace("[--REQ]", entry.parsed_fields.get('req', '-'))
+        result = result.replace("[--UA]", entry.parsed_fields.get('ua', '-'))
+        result = result.replace("[--REF]", entry.parsed_fields.get('ref', '-'))
+        result = result.replace("[--CODE]", str(entry.status_code or '-'))
+        result = result.replace("[--LEN]", str(entry.response_size or '-'))
+        
+        if rule:
+            result = result.replace("[--RULE]", rule.metadata.name)
+        
+        return result + "\n"
+    
+    async def write_trash(self, entry: LogEntry, rule: Rule | None = None) -> None:
+        """Write trash entry."""
+        fp = await self._get_trash_fp()
+        if not fp:
+            return
+        
+        line = self._format_entry(entry, rule)
+        async with self._lock:
+            await asyncio.get_event_loop().run_in_executor(
+                None, fp.write, line
+            )
+    
+    async def write_block(self, decision: BlockDecision) -> None:
+        """Write block decision."""
+        fp = await self._get_badips_fp()
+        if not fp:
+            return
+        
+        line = f"{decision.ip} # {decision.reason}\n"
+        async with self._lock:
+            await asyncio.get_event_loop().run_in_executor(
+                None, fp.write, line
+            )
+    
+    async def close(self) -> None:
+        """Close files."""
+        if self._trash_fp:
+            await asyncio.get_event_loop().run_in_executor(
+                None, self._trash_fp.close
+            )
+            self._trash_fp = None
+        if self._badips_fp:
+            await asyncio.get_event_loop().run_in_executor(
+                None, self._badips_fp.close
+            )
+            self._badips_fp = None
+
+
+class JSONOutputHandler:
+    """Write structured JSON output."""
+    
+    def __init__(self, output_file: str) -> None:
+        self.output_file = Path(output_file)
+        self._fp: TextIO | None = None
+        self._lock = asyncio.Lock()
+    
+    async def _get_fp(self) -> TextIO:
+        if self._fp is None:
+            await asyncio.get_event_loop().run_in_executor(None, self._open)
+        return self._fp
+    
+    def _open(self) -> None:
+        self.output_file.parent.mkdir(parents=True, exist_ok=True)
+        self._fp = open(self.output_file, "a")
+    
+    async def write_trash(self, entry: LogEntry, rule: Rule | None = None) -> None:
+        fp = await self._get_fp()
+        data = {
+            "type": "trash",
+            "timestamp": entry.timestamp.isoformat(),
+            "ip": entry.ip,
+            "request": entry.parsed_fields.get('req'),
+            "user_agent": entry.user_agent,
+            "rule": rule.metadata.name if rule else None
+        }
+        async with self._lock:
+            await asyncio.get_event_loop().run_in_executor(
+                None, self._fp.write, json.dumps(data) + "\n"
+            )
+    
+    async def write_block(self, decision: BlockDecision) -> None:
+        fp = await self._get_fp()
+        data = {
+            "type": "block",
+            "ip": decision.ip,
+            "reason": decision.reason,
+            "confidence": decision.confidence,
+            "detected_at": decision.detected_at.isoformat()
+        }
+        async with self._lock:
+            await asyncio.get_event_loop().run_in_executor(
+                None, self._fp.write, json.dumps(data) + "\n"
+            )
+    
+    async def close(self) -> None:
+        if self._fp:
+            await asyncio.get_event_loop().run_in_executor(None, self._fp.close)
+            self._fp = None
