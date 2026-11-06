@@ -8,15 +8,16 @@ version = "2.0.0"
 description = "Modern security log analyzer with real-time blocking capabilities"
 readme = "README.md"
 requires-python = ">=3.10"
-license = {text = "MIT"}
+license = {text = "Modified Apache License, Version 2.0 — see LICENSE for additional commercial terms"}
 authors = [
+    {name = "Blaz Kos", email = "w4d4f4k@gmail.com"},
     {name = "FWTrash Contributors", email = "dev@grandekos.com"}
 ]
 keywords = ["security", "firewall", "log-analysis", "intrusion-detection", "iptables"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: System Administrators",
-    "License :: OSI Approved :: MIT License",
+    "License :: Other/Proprietary License",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",

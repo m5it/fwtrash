@@ -198,4 +198,36 @@ Ex.: cat /var/log/nginx/access.log | ./fwtrash.py -o badips.out
 
 
 
+## Running without pip install (v2)
+
+New in v2: run directly without publishing to PyPI:
+
+```bash
+pip install -r requirements.txt
+python main.py --help
+python main.py run -P rules/http.rules -o badips.out -O trash.out
+tail -f /var/log/nginx/access.log | python main.py run -P rules/http.rules
+
+# Legacy v0.6 still works
+python main.py --legacy -P rules/http.rules -o badips.out
+tail -f /var/log/nginx/access.log | ./fwtrash.py -P rules/http.rules -o badips.out
+```
+
+Requirements files:
+- `requirements.txt` — core runtime (pydantic, typer, rich, watchdog, pyyaml)
+- `requirements-dev.txt` — dev/test tooling
+- `requirements-dashboard.txt` — optional web dashboard (FastAPI, uvicorn)
+
+## License
+
+Copyright 2026 Blaz Kos — Licensed under the **Modified Apache License, Version 2.0** with additional commercial terms. See [LICENSE](LICENSE) for full text.
+
+Summary of additional terms:
+- **Commercial use** requires written notification to w4d4f4k@gmail.com within 30 days (use case, users, deployment, contact).
+- **Commercial use** requires payment of a license fee (invoiced by licensor).
+- Licensor retains **audit rights** and **termination for non-compliance**.
+- **Governing law:** Spain / Canary Islands (Las Palmas de Gran Canaria); Slovenian law may apply for Slovenian consumers where mandatory.
+
+For licensing inquiries: w4d4f4k@gmail.com.
+
 Happy hunting...

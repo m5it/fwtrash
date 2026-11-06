@@ -1,0 +1,8 @@
+# Dashboard extra — mirrors [project.optional-dependencies].dashboard in v2/pyproject.toml
+# Install: pip install -r requirements.txt -r requirements-dashboard.txt
+-r requirements.txt
+
+fastapi>=0.104
+uvicorn>=0.24
+websockets>=12.0
+jinja2>=3.1

@@ -43,21 +43,21 @@ Modern security log analyzer with real-time threat detection and automatic IP bl
 ### Without pip install (run from source)
 
 ```bash
-cd v2
-pip install -e ".[dev]"        # Development install
-fwtrash --help                 # Now available as command
+# From repo root — no pip install needed
+pip install -r requirements.txt        # or: pip install -r v2/requirements.txt analogue
+python main.py --help
+python main.py run -P rules/http.rules -o badips.out
 
-# Or run directly without install
+# Piped logs (same as v0.6 style)
+tail -f /var/log/nginx/access.log | python main.py run -P rules/http.rules
+
+# Alternative: editable install still works
 cd v2
+pip install -e ".[dev]"
+fwtrash --help
+
+# Or run as module
 python -m fwtrash.cli.main --help
-
-# Or create a launcher script
-python -c "
-import sys
-sys.path.insert(0, 'src')
-from fwtrash.cli.main import app
-app()
-" -- run -P ../rules/http.rules
 ```
 
 ### With pip install (when published)
@@ -183,8 +183,18 @@ make build         # Build package
 
 See [MIGRATION.md](MIGRATION.md) for detailed upgrade guide.
 
-##
-**Author:** t3ch (w4d4f4k at gmail dot com)
 ## License
 
-MIT - See [LICENSE](LICENSE)
+Copyright 2026 Blaz Kos — Licensed under the **Modified Apache License, Version 2.0** with additional commercial terms. See [LICENSE](../LICENSE) (repo root) for full text.
+
+Summary of additional terms:
+- **Commercial use** requires written notification to w4d4f4k@gmail.com within 30 days (use case, users, deployment, contact).
+- **Commercial use** requires payment of a license fee (invoiced by licensor).
+- Licensor retains **audit rights** and **termination for non-compliance**.
+- **Governing law:** Spain / Canary Islands (Las Palmas de Gran Canaria); Slovenian law may apply for Slovenian consumers where mandatory.
+
+For licensing inquiries: w4d4f4k@gmail.com.
+
+## Author
+
+t3ch (w4d4f4k at gmail dot com) — [grandekos.com](https://grandekos.com)
