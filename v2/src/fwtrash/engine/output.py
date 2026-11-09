@@ -20,11 +20,13 @@ class FileOutputHandler:
         self,
         trash_file: str | None = None,
         badips_file: str | None = None,
-        template: str | None = None
+        template: str | None = None,
+        debug: bool = False,
     ) -> None:
         self.trash_file = Path(trash_file) if trash_file else None
         self.badips_file = Path(badips_file) if badips_file else None
         self.template = template or "[--DATE] [--IP] => [--REQ]"
+        self.debug = bool(debug)
         
         self._trash_fp: TextIO | None = None
         self._badips_fp: TextIO | None = None
@@ -72,8 +74,26 @@ class FileOutputHandler:
         
         if rule:
             result = result.replace("[--RULE]", rule.metadata.name)
+            result = result.replace("[--RULE_ID]", getattr(rule, "rule_id", "")[:12])
+        
+        # Auto-include reason if template doesn't already contain it and debug is active for later forensics
+        if rule and "[--RULE]" not in self.template and "[--RULE_ID]" not in self.template:
+            # e.g. default -> append rule hint
+            pass
         
         return result + "\n"
+
+    def _block_debug_line(self, decision: BlockDecision) -> str:
+        """Rich debug line for badips file: ip timestamp rule/reason req code ua."""
+        ip = decision.ip
+        # decision holds log_entry if available
+        entry = getattr(decision, "log_entry", None)
+        if entry is not None:
+            req = entry.parsed_fields.get('req', '-')[:120]
+            code = entry.parsed_fields.get('code', getattr(entry, 'status_code', '-'))
+            ua = (entry.parsed_fields.get('ua', '') or getattr(entry, 'user_agent', ''))[:80]
+            return f"{ip} # {decision.detected_at.isoformat()} rule={decision.rule_id[:8]} reason={decision.reason!r} {code} {req!r} ua={ua!r}\n"
+        return f"{ip} # {decision.detected_at.isoformat()} rule={decision.rule_id[:8]} reason={decision.reason!r}\n"
     
     async def write_trash(self, entry: LogEntry, rule: Rule | None = None) -> None:
         """Write trash entry."""
@@ -88,12 +108,15 @@ class FileOutputHandler:
             )
     
     async def write_block(self, decision: BlockDecision) -> None:
-        """Write block decision."""
+        """Write block decision — with debug why when --debug is on."""
         fp = await self._get_badips_fp()
         if not fp:
             return
         
-        line = f"{decision.ip} # {decision.reason}\n"
+        if self.debug:
+            line = self._block_debug_line(decision)
+        else:
+            line = f"{decision.ip} # {decision.reason}\n"
         async with self._lock:
             await asyncio.get_event_loop().run_in_executor(
                 None, fp.write, line

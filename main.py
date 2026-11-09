@@ -26,17 +26,12 @@ ROOT = Path(__file__).resolve().parent
 V2_SRC = ROOT / "v2" / "src"
 
 if V2_SRC.exists():
-    # Prepend so local source takes precedence over any installed package
     sys.path.insert(0, str(V2_SRC))
-else:
-    # Fallback: running from inside v2/ itself
-    alt = Path(__file__).resolve().parent / "src"
-    if alt.exists():
-        sys.path.insert(0, str(alt))
 
-# Also ensure repo root is on path for `modules.*` / `functions` legacy imports
+# Also ensure repo root is on path for `modules.*` / `functions` legacy imports,
+# but it must come *after* V2_SRC so `fwtrash.py` does not shadow `v2/src/fwtrash/`
 if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+    sys.path.append(str(ROOT))
 
 
 def _check_dependencies() -> list[str]:

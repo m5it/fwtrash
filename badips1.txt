@@ -1,0 +1,20 @@
+217.216.58.102 # Unnamed Rule
+217.216.58.102 # Unnamed Rule
+217.216.58.102 # Unnamed Rule
+54.224.121.246 # 2026-11-09T13:29:11.891607 rule=e65fa583 reason='Unnamed Rule' 200 'GET /sma/magazine/2025/november/captives.php HTTP/1.1' ua='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/15'
+114.119.145.22 # 2026-11-09T13:29:11.896387 rule=e65fa583 reason='Unnamed Rule' 302 'GET /sma/99/iraidadoug.php HTTP/1.1' ua='Mozilla/5.0 (Linux; Android 7.0;) AppleWebKit/537.36 (HTML, like Gecko) Mobile S'
+98.97.3.76 # 2026-11-09T13:29:12.089693 rule=e65fa583 reason='Unnamed Rule' 200 'GET /1,mexico,mexico_city/search/dive+bar/ HTTP/1.1' ua='Mozilla/5.0 (iPhone; CPU iPhone OS 18_4 like Mac OS X) AppleWebKit/605.1.15 (KHT'
+213.209.159.133 # 2026-11-09T13:29:15.522687 rule=e65fa583 reason='Unnamed Rule' 499 'GET /assets/gk_signin_remote/gadget.js HTTP/1.1' ua='Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome'
+213.209.159.133 # 2026-11-09T13:29:15.525419 rule=e65fa583 reason='Unnamed Rule' 499 'GET /static/aiia-auth.js HTTP/1.1' ua='Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome'
+32.196.203.64 # 2026-11-09T13:29:15.924935 rule=e65fa583 reason='Unnamed Rule' 200 'GET /sma/magazine/2024/october/parades.php HTTP/1.1' ua='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/15'
+140.248.4.74 # 2026-11-09T13:29:16.527553 rule=e65fa583 reason='Unnamed Rule' 302 'GET / HTTP/1.1' ua='Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHT'
+1.15.52.154 # 2026-11-09T13:29:16.729794 rule=e65fa583 reason='Unnamed Rule' 301 'GET / HTTP/1.1' ua='Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (K'
+217.216.58.102 # 2026-11-09T13:29:16.929416 rule=e65fa583 reason='Unnamed Rule' 200 'GET /1,mexico,san_miguel_de_allende/wall/&opt_mtype=1&opt_type=1&opt_ord=1&opt_whos=2&opt_sort=2&opt_sort3=&opt_viewing=' ua='Mozilla/5.0 (X11; Linux x86_64; rv:153.0) Gecko/20100101 Firefox/153.0'
+104.28.55.169 # 2026-11-09T13:29:17.534615 rule=e65fa583 reason='Unnamed Rule' 302 'GET /syncsess.php?for=https://sanmigueldeallendeevents.com HTTP/1.1' ua='Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHT'
+174.224.188.189 # 2026-11-09T13:29:18.344331 rule=e65fa583 reason='Unnamed Rule' 404 'GET /syncsess.php?for=https://sanmigueldeallendeevents.com HTTP/1.1' ua='Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHT'
+72.58.144.197 # 2026-11-09T13:29:19.552003 rule=e65fa583 reason='Unnamed Rule' 302 'GET /1,mexico,mexico_city/search/south+portland%2C+maine/%5BCSC_URL%5D HTTP/1.1' ua='Mozilla/5.0 (Linux; Android 15; SM-S938B) AppleWebKit/537.36 (KHTML, like Gecko)'
+185.191.171.8 # 2026-11-09T13:29:20.155001 rule=e65fa583 reason='Unnamed Rule' 301 'GET /sma/magazine/2026/november/goldenais.php HTTP/1.1' ua='Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)'
+143.14.151.24 # 2026-11-09T13:29:20.960868 rule=e65fa583 reason='Unnamed Rule' 301 'GET /sma/94/ph/moviess.jpg HTTP/1.1' ua='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)'
+85.208.96.207 # 2026-11-09T13:29:21.563042 rule=e65fa583 reason='Unnamed Rule' 200 'GET /sma/magazine/2026/november/goldenais.php HTTP/1.1' ua='Mozilla/5.0 (compatible; SemrushBot/7~bl; +http://www.semrush.com/bot.html)'
+75.167.19.143 # 2026-11-09T13:29:23.175632 rule=e65fa583 reason='Unnamed Rule' 200 'GET /1,mexico,mexico_city/search/south+portland%2C+maine/%5BCSC_URL%5D HTTP/1.1' ua='Mozilla/5.0 (Linux; Android 15; SM-S938B) AppleWebKit/537.36 (KHTML, like Gecko)'
+217.113.194.205 # 2026-11-09T13:29:24.787623 rule=e65fa583 reason='Unnamed Rule' 200 'GET / HTTP/1.1' ua='Mozilla/5.0 (compatible; Barkrowler/0.9; +https://babbar.tech/crawler)'

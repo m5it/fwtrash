@@ -1,0 +1,24 @@
+#--
+# http.long_sql_traversal.rules - derived from /home/t3ch/access.log (500k sample)
+# Covers: long queries, %25 chains, path traversal, SQLi (as seen on grandekos.com probe)
+# Field keys: req, code, ua, ref - compatible with modules.http / v2 http parser
+# Types: 1=base64 regex, 2=regex, 3=plain, 4=len> ,5=len>= etc. See rules/http.rules header
+# Tuned for lokkal: p99 req len=66, legit search double-encoded hits 150-200 but scores 200 - threshold 250 avoids FP
+# SQLi sample: /index.php?static_page=...%20AND%20(SELECT%206814%... on 404 - 187 hits in 500k, 0 on 200
+# Usage: cat rules/http.rules rules/http.long_sql_traversal.rules > rules/combined.rules
+#        fwtrash run -P rules/combined.rules --input /var/log/nginx/access.log --follow
+#--
+# Too long request line (likely buffer overflow / fuzz) - req len >250
+[{"key": "req", "type": "4", "data": "250"}]
+# Long + 404 (fuzz scanner) - 404 and req len>150
+[{"key": "code", "type": "3", "data": "404"}, {"key": "req", "type": "4", "data": "150"}]
+# Triple-encoded traversal/obfuscation on 404 - (%25){3,}
+[{"key": "code", "type": "3", "data": "404"}, {"key": "req", "type": "2", "data": "(%25){3,}"}]
+# Repeated triple-encoded spam — disabled: was catching legit Applebot %252525 searches (67777×200) → block-everything
+# [{"key": "req", "type": "2", "data": "(%25){3,}", "bruteforce_count_key": "2"}]
+# Path traversal - ..%2f / ..%252f / ../
+[{"key": "req", "type": "2", "data": "(\\.\\./|\\.\\.%2[fF]|\\.\\.%252[fF]|%2e%2e)"}]
+# SQLi - union/select/information_schema/sleep/PG_SLEEP/EXTRACTVALUE/ELT/benchmark - 404/200 (grandekos/lokkal OR 852=(SELECT 852 FROM PG_SLEEP(15))-- & OR EXTRACTVALUE(5519,CONCAT(0x7e,(SELECT(ELT…)))
+[{"key": "code", "type": "3", "data": "404"}, {"key": "req", "type": "2", "data": "(union\\s+select|select\\s+.*from|information_schema|or\\s+1\\s*=\\s*1|sleep\\s*(\\(|%28)|pg_sleep\\s*(\\(|%28)|extractvalue\\s*(\\(|%28)|updatexml\\s*(\\(|%28)|elt\\s*(\\(|%28)|benchmark\\s*(\\(|%28)|into\\s+outfile|load_file\\s*(\\(|%28))"}]
+# SQLi generic on req - catches 200 PG_SLEEP/EXTRACTVALUE (lokkal ?blockoreport OR PG_SLEEP & ?search OR EXTRACTVALUE%28)
+[{"key": "req", "type": "2", "data": "(union\\s+select|information_schema|pg_sleep\\s*(\\(|%28)|extractvalue\\s*(\\(|%28)|updatexml\\s*(\\(|%28)|elt\\s*(\\(|%28)|into\\s+outfile|load_file\\s*(\\(|%28))"}]

@@ -45,16 +45,23 @@ Modern security log analyzer with real-time threat detection and automatic IP bl
 ```bash
 # From repo root — no pip install needed
 pip install -r requirements.txt        # or: pip install -r v2/requirements.txt analogue
-python main.py --help
+python main.py -h            # alias for --help
+python main.py run -h        # pipeline options
 python main.py run -P rules/http.rules -o badips.out
 
-# Piped logs (same as v0.6 style)
-tail -f /var/log/nginx/access.log | python main.py run -P rules/http.rules
+# New: read file directly (no pipe needed — handles 3GB+ logs streamed)
+python main.py run -P rules/http.rules --input /var/log/nginx/access.log          # batch to EOF then exit
+python main.py run -P rules/http.rules --input /var/log/nginx/access.log --follow  # live tail -F with rotation
+
+# Piped logs (same as v0.6 style — still supported)
+tail -F /var/log/nginx/access.log | python main.py run -P rules/http.rules
+cat ../access.log | python main.py run -P rules/http.generated.rules --dry-run -d
 
 # Alternative: editable install still works
 cd v2
 pip install -e ".[dev]"
 fwtrash --help
+fwtrash run -h
 
 # Or run as module
 python -m fwtrash.cli.main --help
@@ -153,15 +160,52 @@ class MyParser(LogParser):
 
 See [docs/plugin-development.md](docs/plugin-development.md) for full guide.
 
+## CLI Help
+
+Both `-h` and `--help` are accepted at every level (via `context_settings={"help_option_names": ["-h","--help"]}`):
+
+```bash
+python main.py -h          # top-level commands
+python main.py --help       # same as -h
+python main.py run -h      # pipeline options (flags below)
+python main.py run --help  # same as -h
+```
+
 ## Commands
 
 | Command | Description |
 |---------|-------------|
-| `fwtrash run` | Start processing pipeline |
+| `fwtrash run` | Start processing pipeline (`-P`, `-i/--input`, `-F/--follow`, `-p`, `-o/-O`, `-a`, `-c`, `-n`, `-d`, `-D`, `--dashboard`) |
 | `fwtrash detect` | Auto-detect log format |
 | `fwtrash list-parsers` | List available parsers |
 | `fwtrash validate-rules` | Validate rules file |
 | `fwtrash dashboard` | Launch web dashboard |
+
+### `fwtrash run` — input modes
+
+* `fwtrash run -P rules/http.rules --input /var/log/nginx/access.log --follow` — follow live log (recommended, like `tail -F`, handles rotation). Starts at EOF.
+* `fwtrash run -P rules/http.rules --input /var/log/nginx/access.log` — batch: stream to EOF then exit (good for 3.4G replays; streams, doesn't load whole file).
+* `tail -F … | fwtrash run -P rules/http.rules` / `cat file | fwtrash …` — stdin pipe mode (v0.6 compatible). With no `--input` and no pipe on a TTY, fwtrash warns and explains the two alternatives.
+
+### `fwtrash run` — debugging bad traffic (nothing shows?)
+
+Your `~/fwtrash` batch with `rules/http.generated.rules` did match: `Trash 24 910 / 672 429` (3.7%). `Blocked 0` is expected — generated rules default to `action=log` (trash-only) so they don't auto-block via `iptables`; add `action=drop` or rely on `-c` command (future).
+
+To see per-line decisions:
+
+```bash
+# half — per-line summary (recommended for live attacks like your batch/v1 405 burst):
+sudo fwtrash run -P rules/http.generated.rules --input /var/log/nginx/access.log --follow --debug half --dry-run -d
+sudo fwtrash run -P rules/http.generated.rules --debug half --dry-run          # same, global flag
+python main.py -v run -P rules/http.generated.rules --input /var/log/nginx/access.log --follow  # -v = --debug full alias
+
+# full — per-rule, per-condition trace (verbose):
+echo 'POST /batch/v1 ... 405' | python main.py run -P rules/http.generated.rules --debug full --dry-run -d
+echo '...' | python main.py -v run -P rules/http.generated.rules --dry-run -d  # -v alias
+
+# also: -h/--help at every level
+python main.py -h; python main.py run -h; fwtrash validate-rules -h
+```
 
 ## Docker
 

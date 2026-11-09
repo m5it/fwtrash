@@ -200,13 +200,18 @@ Ex.: cat /var/log/nginx/access.log | ./fwtrash.py -o badips.out
 
 ## Running without pip install (v2)
 
-New in v2: run directly without publishing to PyPI:
+New in v2: run directly without publishing to PyPI — both `-h` and `--help` work everywhere:
 
 ```bash
 pip install -r requirements.txt
-python main.py --help
+python main.py -h            # same as --help
+python main.py run -h        # pipeline flags
 python main.py run -P rules/http.rules -o badips.out -O trash.out
-tail -f /var/log/nginx/access.log | python main.py run -P rules/http.rules
+# Direct file input (new — no pipe needed, streams 3.4G+ safely):
+python main.py run -P rules/http.rules --input /var/log/nginx/access.log --follow
+python main.py run -P rules/http.rules --input /var/log/nginx/access.log   # batch to EOF
+# Still supported:
+tail -F /var/log/nginx/access.log | python main.py run -P rules/http.rules
 
 # Legacy v0.6 still works
 python main.py --legacy -P rules/http.rules -o badips.out

@@ -391,8 +391,10 @@ class PipelineStats(BaseModel):
 class PipelineConfig(BaseModel):
     """Configuration for the processing pipeline."""
     
-    # Input/Output
+    # Input
     parser: ParserConfig = Field(default_factory=lambda: ParserConfig(name="auto"))
+    input_file: str | None = Field(default=None, description="Log file to read (alternative to stdin)")
+    follow: bool = Field(default=False, description="Follow file like tail -f (implies input_file)")
     
     # Files
     rules_file: str | None = None
@@ -404,12 +406,17 @@ class PipelineConfig(BaseModel):
     verbose: bool = True
     disable_stats: bool = False
     stop_on_new_day: bool = False
+    debug_mode: str = Field(default="off", description="off|low|half|half-all|full")
     
     # Display
     stat_display_keys: list[str] = Field(default_factory=list)
     stat_display_template: str = ""
     max_pure_memory: int = 100  # g_opt_pure_max from v0.6
     
+    # Bruteforce: key -> (count_limit, time_window_sec) like v0.6 -b "key:1,climit:3,tlimit:60"
+    bruteforce_limits: dict[int, tuple[int, int]] = Field(default_factory=lambda: {1: (3, 60), 2: (5, 300)}, description="Bruteforce thresholds")
+    force_block: bool = Field(default=False, description="Treat every trash as DROP (iptables block)")
+
     # Auto-save
     autosave_interval: int = 10  # Save options every N entries
     

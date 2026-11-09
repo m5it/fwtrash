@@ -1,0 +1,32 @@
+#--
+# Generated from /home/t3ch/access.log (first 500k sample, 2026-08..11)
+# Keys: req, code, len, ref, ua, date - compatible with modules.http / v2 http parser
+# Total 16M lines 3.4G - these rules are conservative (require 404 where noted) to avoid false positives on lokkal.com
+# Usage: fwtrash run -P rules/http.rules --input /var/log/nginx/access.log --follow
+#    or combine: fwtrash run -P rules/http.generated.rules --input /var/log/nginx/access.log
+#    or merge both files: cat rules/http.rules rules/http.generated.rules > rules/combined.rules
+#--
+# .env exposure probes - 404 + req ~ \.env — disabled like generic (too broad for proxy; enable later with higher threshold)
+# [{"key": "code", "type": "3", "data": "404", "bruteforce_count_key": "1"}, {"key": "req", "type": "2", "data": "\\.env"}]
+# .git exposure - 404 + req
+[{"key": "code", "type": "3", "data": "404"}, {"key": "req", "type": "2", "data": "\\.git"}]
+# AWS/credentials/secrets exfil - 404
+[{"key": "code", "type": "3", "data": "404"}, {"key": "req", "type": "2", "data": "(\\.aws|credentials\\.json|secrets\\.json|\\.boto|\\.s3cfg|serviceAccountKey|service_account|firebase-adminsdk)"}]
+# WordPress probes - 404 (includes wp-json/batch/v1 burst currently 405 but also variant 404)
+[{"key": "code", "type": "3", "data": "404"}, {"key": "req", "type": "2", "data": "wp-(content|includes|json|admin)"}]
+# WP manifest/license enumeration — immediate trash (you host no WP, repeated by 34.148.142.74 across //blog/wp-includes/wlwmanifest.xml etc)
+[{"key": "req", "type": "2", "data": "wlwmanifest\\.xml"}]
+[{"key": "req", "type": "2", "data": "license\\.txt"}]
+# Generic repeat-404 bruteforce — DISABLED (was too broad, blocked your proxy on normal 404/302): use specific probes above or raise to 10/60
+# [{"key": "code", "type": "3", "data": "404", "bruteforce_count_key": "1"}]
+# WordPress batch/v1 probing - 405 or 404 (live attack on grandekos.com from 45.138.12.45 — 405 with /batch/v1)
+[{"key": "code", "type": "3", "data": "405"}, {"key": "req", "type": "2", "data": "batch/v1"}]
+[{"key": "code", "type": "3", "data": "404"}, {"key": "req", "type": "2", "data": "batch/v1"}]
+# infra config probes
+[{"key": "code", "type": "3", "data": "404"}, {"key": "req", "type": "2", "data": "(\\.docker|docker-compose|\\.npmrc|terraform\\.tfstate|rclone\\.conf|\\.svn|\\.htpasswd|classwithtostring\\.php|info\\.php)"}]
+# graphql probing — throttled (your /rest/index.php 200 legit traffic was hitting the broad req-only rule)
+[{"key": "req", "type": "2", "data": "graphql", "bruteforce_count_key": "2"}]
+# admin/login probing - 404
+[{"key": "code", "type": "3", "data": "404"}, {"key": "req", "type": "2", "data": "/(admin|login|signin|signup|register|dashboard)(/|$|\\?)"}]
+# generic php probing on 404 - conservative: only standalone php files that 404d heavily
+[{"key": "code", "type": "3", "data": "404"}, {"key": "req", "type": "2", "data": "/(index|admin|1|222)\\.php"}]

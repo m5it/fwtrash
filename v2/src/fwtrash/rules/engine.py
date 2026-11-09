@@ -536,10 +536,62 @@ class RuleEngine:
         return matches
     
     def load_from_json(self, json_path: str) -> None:
-        """Load rules from JSON file (v0.6 format compatible)."""
+        """Load rules from JSON file (v0.6 format compatible).
+
+        Supports two on-disk formats:
+          1. Pure JSON array:  [[ {"key":.., "type":.., "data":..}, ... ], ...]
+          2. v0.6 line-delimited format used by rules/*.rules:
+             - blank/comment lines (starting with '#') are ignored
+             - trailing '# comment' fragments are stripped
+             - each remaining line is one JSON rule (a list of condition dicts)
+        """
+        data: list[Any] = []
         with open(json_path) as f:
-            data = json.load(f)
-        
+            raw = f.read()
+
+        # Try pure JSON first (fast path for proper .json files)
+        stripped = raw.strip()
+        if stripped[:1] in ("[", "{"):
+            try:
+                parsed = json.loads(stripped)
+                # Pure JSON must parse to a list; if it's line-delimited the
+                # first char is '[' but json.loads will fail with Extra data
+                data = parsed if isinstance(parsed, list) else []
+                # Heuristic: if file contains comment lines, fall through to
+                # line parser even though json.loads succeeded for first rule
+                if "#" in raw and "\n#" in raw:
+                    raise ValueError("contains comments — use line parser")
+            except (json.JSONDecodeError, ValueError):
+                data = []
+
+        # Fallback / primary for rules/*.rules: line-delimited + comments
+        if not data:
+            data = []
+            with open(json_path) as f:
+                for line in f:
+                    # Skip empty / comment-only lines  (port of func_load.py:73)
+                    if re.match(r"^#|\s*$", line):
+                        continue
+                    # Strip trailing "# comment" (port of func_load.py:75-76)
+                    if re.search(r".*#.*", line):
+                        # Extract portion before the first '#'
+                        m = re.match(r"^(.*?)(?=#)", line)
+                        if m:
+                            line = m.group(1)
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        data.append(json.loads(line))
+                    except json.JSONDecodeError as e:
+                        raise ValueError(
+                            f"Invalid rule JSON in {json_path}: {e.msg} "
+                            f"(line: {line[:120]!r})"
+                        ) from e
+
+        if not data:
+            raise ValueError(f"No rules found in {json_path}")
+
         rules = []
         for item in data:
             # v0.6 format: list of condition objects per rule
@@ -567,8 +619,13 @@ class RuleEngine:
         
         self.load_rules(rules)
     
-    def _map_type(self, v06_type: int) -> str:
+    def _map_type(self, v06_type: int | str) -> str:
         """Map v0.6 type numbers to ConditionType."""
+        # v0.6 stores type as string "1".."8" in rules/*.rules — coerce to int
+        try:
+            v06_type = int(v06_type)  # type: ignore[arg-type]
+        except (TypeError, ValueError):
+            pass
         mapping = {
             1: "base64_regex",
             2: "regex",
@@ -579,7 +636,7 @@ class RuleEngine:
             7: "length_lt",
             8: "length_eq",
         }
-        return mapping.get(v06_type, "regex")
+        return mapping.get(v06_type, "regex")  # type: ignore[arg-type]
     
     def get_stats(self) -> dict[str, Any]:
         """Return engine statistics."""
