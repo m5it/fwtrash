@@ -598,12 +598,19 @@ class RuleEngine:
             if isinstance(item, list):
                 conditions = []
                 for cond_data in item:
+                    ct = ConditionType(self._map_type(cond_data.get("type", 2)))
+                    data = cond_data.get("data", "")
+                    # Types 4-8 are length checks: data holds threshold like "250"
+                    is_length = ct in (ConditionType.LENGTH_GTE, ConditionType.LENGTH_GT, ConditionType.LENGTH_LTE, ConditionType.LENGTH_LT, ConditionType.LENGTH_EQ)
+                    try:
+                        lv = int(data) if is_length else None
+                    except (ValueError, TypeError):
+                        lv = None
                     rc = RuleCondition(
                         field=cond_data.get("key", ""),
-                        condition_type=ConditionType(
-                            self._map_type(cond_data.get("type", 2))
-                        ),
-                        pattern=cond_data.get("data", ""),
+                        condition_type=ct,
+                        pattern="" if is_length else data,
+                        length_value=lv,
                         bruteforce_key=cond_data.get("bruteforce_count_key")
                     )
                     conditions.append(rc)
