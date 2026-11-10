@@ -112,6 +112,10 @@ class IptablesBackend:
         self.use_nftables = use_nftables
     
     async def block(self, decision: BlockDecision) -> bool:
+        # Idempotent: skip if already blocked (prevents duplicates on restart / race)
+        if await self.is_blocked(decision.ip):
+            logger.debug(f"iptables already has {decision.ip}, skipping")
+            return True
         if self.use_nftables:
             cmd = f"nft add rule ip {self.table} {self.chain} ip saddr {decision.ip} drop"
         else:

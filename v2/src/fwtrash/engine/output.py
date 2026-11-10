@@ -106,6 +106,7 @@ class FileOutputHandler:
             await asyncio.get_event_loop().run_in_executor(
                 None, fp.write, line
             )
+            await asyncio.get_event_loop().run_in_executor(None, fp.flush)
     
     async def write_block(self, decision: BlockDecision) -> None:
         """Write block decision — with debug why when --debug is on."""
@@ -121,6 +122,7 @@ class FileOutputHandler:
             await asyncio.get_event_loop().run_in_executor(
                 None, fp.write, line
             )
+            await asyncio.get_event_loop().run_in_executor(None, fp.flush)
     
     async def close(self) -> None:
         """Close files."""

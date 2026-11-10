@@ -313,31 +313,20 @@ async def _async_run(
 
 
 async def _live_stats_reporter(state: PipelineState, interval: float = 10.0) -> None:
-    """Periodically re-render the Pipeline Statistics table in place (every 10s). Uses rich.live."""
-    # Import lazily to avoid cycle if console not needed
-    from rich.live import Live
-    def _make_table() -> Table:
-        t = Table(title=f"Pipeline Statistics (live, {interval:.0f}s)")
-        t.add_column("Metric", style="cyan")
-        t.add_column("Value", style="magenta")
-        s = state.stats
-        t.add_row("Total Processed", str(s.total_processed))
-        t.add_row("Allowed", str(s.total_allowed))
-        t.add_row("Trash", str(s.total_trash))
-        t.add_row("Blocked", str(s.total_blocked))
-        t.add_row("Active Blocks", str(len(state.active_blocks)))
-        t.add_row("Uptime (s)", f"{s.uptime_seconds:.1f}")
-        t.add_row("Rate (eps)", f"{s.entries_per_second:.1f}")
-        return t
+    """Low-movement stats: single log line every 10s, no table flicker (fixes Live+logger clash)."""
     try:
-        with Live(_make_table(), console=console, refresh_per_second=1, transient=False) as live:
-            while not state.shutdown_requested:
-                await asyncio.sleep(interval)
-                live.update(_make_table())
+        while not state.shutdown_requested:
+            await asyncio.sleep(interval)
+            s = state.stats
+            # One-line, overwrites conceptually via logger but logger scrolls 1 line only
+            logger.info(
+                f"Stats live {interval:.0f}s: Processed={s.total_processed} Allowed={s.total_allowed} "
+                f"Trash={s.total_trash} Blocked={s.total_blocked} Active={len(state.active_blocks)} "
+                f"eps={s.entries_per_second:.1f} up={s.uptime_seconds:.0f}s"
+            )
     except asyncio.CancelledError:
         raise
     except Exception:
-        # Fallback: no live if terminal doesn't support it
         pass
 
 

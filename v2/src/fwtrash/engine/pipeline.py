@@ -152,6 +152,8 @@ class Pipeline:
         # Bruteforce tracking: key -> ip -> deque[timestamps]
         from collections import defaultdict
         self._bruteforce_store: dict[int, dict[str, deque]] = defaultdict(lambda: defaultdict(deque))
+        # Serialize blocking per IP to avoid 4 concurrent workers adding same iptables rule
+        self._block_lock = asyncio.Lock()
 
         # Setup signal handlers
         self._setup_signals()
@@ -324,11 +326,15 @@ class Pipeline:
                 if self.output_handler:
                     await self.output_handler.write_trash(entry, rule)
                 
-                # Handle blocking (or forced via --block)
+                # Handle blocking (or forced via --block) — serialized per IP to dedup iptables
                 force = getattr(self.config, "force_block", False)
                 if (rule.action == BlockAction.DROP or force) and not self.state.is_ip_blocked(entry.ip):
-                    decision = BlockDecision.from_rule(entry.ip, rule, entry, confidence)
-                    await self._handle_block(decision)
+                    async with self._block_lock:
+                        if self.state.is_ip_blocked(entry.ip):
+                            logger.debug(f"Skipping duplicate block for {entry.ip} (already in state)")
+                        else:
+                            decision = BlockDecision.from_rule(entry.ip, rule, entry, confidence)
+                            await self._handle_block(decision)
                     # In --block mode, count as blocked immediately for stats parity
                     if force and rule.action != BlockAction.DROP:
                         logger.debug(f"--block forced DROP for {entry.ip} (rule log->drop)")
