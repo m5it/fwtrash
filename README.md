@@ -1,5 +1,7 @@
-# Last update: 2026-07-13 Version v2:
+# Last update: 2026-11-10 Version v2:
 <h1><a href="v2">v2.0.0</a></h1>
+
+![FWTrash in action](pic/screenshot1.jpg)
 
 
 
@@ -139,6 +141,18 @@ Aug  9 07:02:36 ip-172-31-3-59 systemd-logind[34426]: Session 3050 logged out. W
 Aug  9 07:02:36 ip-172-31-3-59 systemd-logind[34426]: Removed session 3050.
 
 
+#--------------------------------------------------------------------
+* v2.0.1 - 10.11.2026
+    - New: `main.py` launcher — run without `pip install` (`python main.py run -P rules/http.rules`)
+    - New: `requirements.txt` / `requirements-dev.txt` / `requirements-dashboard.txt`
+    - New: `--input/-i` + `--follow/-F` (direct file read / tail -F with rotation, handles 3GB+ logs)
+    - New: `--debug` levels (`off|low|half|half-all|full`) and `-h` alias, live 10s stats line
+    - New: `--block` to force every TRASH to DROP (action=log by default)
+    - New: stdin TTY warning, flush-after-write for `badips`/`trash`, idempotent iptables blocking
+    - Fix: rules engine now handles v0.6 line-delimited `rules/*.rules` with `#` comments; string `type` coercion
+    - Rules: added `rules/http.generated.rules` + `rules/http.long_sql_traversal.rules`
+    - Fix: `main.py` path order (v2/src before repo root, avoids shadowing)
+    - Docs: changelog + screenshot (`pic/screenshot1.jpg`)
 #--------------------------------------------------------------------
 * v0.6 - 03.02.2026
     Updates and bugfixes for previous versions.

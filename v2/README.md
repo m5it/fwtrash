@@ -2,6 +2,8 @@
 
 Modern security log analyzer with real-time threat detection and automatic IP blocking.
 
+![FWTrash in action](https://raw.githubusercontent.com/grandekos/fwtrash/master/pic/screenshot1.jpg)
+
 [![CI](https://github.com/grandekos/fwtrash/workflows/CI/badge.svg)](https://github.com/grandekos/fwtrash/actions)
 [![codecov](https://codecov.io/gh/grandekos/fwtrash/branch/main/graph/badge.svg)](https://codecov.io/gh/grandekos/fwtrash)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
@@ -222,6 +224,10 @@ make test          # Run all tests
 make lint          # Run linters
 make build         # Build package
 ```
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) — v2.0.1 adds `--input/--follow`, `--debug`, `--block`, idempotent blocking and new rules.
 
 ## Migration from v0.6
 
